@@ -1,0 +1,217 @@
+﻿<html>
+	<head>
+       <meta charset="utf-8">
+        <title>Pong</title>
+
+        <style>
+            canvas{
+                position: absolute;
+                margin:auto;
+                top:0;
+                bottom: 0;
+                left:0;
+                right: 0;
+            }
+        </style>
+	</head>
+    <body>
+        <script>
+            //^ style thing to make it on the center;
+            var WIDTH = 600, HEIGHT = 600, pi = Math.PI;
+            var canvas, context, keystate;
+            var player_T, ball;
+
+            var speed = 10;
+            //moving keys (only top)
+            var LeftArrow = 37, RightArrow = 39;
+
+
+            player_T = {
+                x: null,
+                y: null,
+                width : 100,
+                height :20,
+
+                update: function () {
+                    if (keystate[LeftArrow]) this.x -= speed;
+                    if (keystate[RightArrow]) this.x += speed;
+
+                },
+                draw: function () {
+                    context.fillStyle = 'red';
+                    context.fillRect(this.x, this.y, this.width, this.height);
+
+                  
+                }
+            };
+            //player_B = {
+            //    x: null,
+            //    y: null,
+            //    width: 100,
+            //    height: 20,
+
+            //    update: function () {
+        
+            //    },
+            //    draw: function () {
+            //        context.fillStyle = 'blue';
+            //        context.fillRect(this.x, this.y, this.width, this.height);
+
+                 
+            //    }
+            //};
+            //player_L = {
+            //    x: null,
+            //    y: null,
+            //    width: 100,
+            //    height: 20,
+
+            //    update: function () { },
+            //    draw: function () {
+            //        context.fillRect(this.x, this.y, this.width, this.height);
+            //    }
+            //};
+            //player_R = {
+            //    x: null,
+            //    y: null,
+            //    width: 100,
+            //    height: 20,
+
+            //    update: function () { },
+            //    draw: function () {
+            //        context.fillRect(this.x, this.y, this.width, this.height)
+            //    }
+            //};
+            ball = {
+                x: null,
+                y: null,
+                velocity: null,
+                radius: 10,
+                speed: 5,
+                update: function () {
+                    this.x += this.velocity.x;
+                    this.y += this.velocity.y;
+
+                    if (this.y <0 || this.y+this.radius > HEIGHT)
+                    {
+                        var offset = this.velocity.y < 0 ? 0 - this.y : HEIGHT - (this.y + this.radius);
+
+                        //if ball is going up, offset is -position, if going down, offset is height - position+radius
+                        this.y += offset;
+
+                        this.velocity.y *= -1; 
+                    
+                    }//if out of bound vertically, going back  //going to remove for actual game since no borders
+
+                    if (this.x < 0 || this.x + this.radius > WIDTH)
+                    {
+                        var offset = this.velocity.y < 0 ? 0 - this.y : HEIGHT - (this.y + this.radius);
+
+                        //if ball is going up, offset is -position, if going down, offset is height - position+radius
+                        this.y += offset;
+
+                        this.velocity.y *= -1;
+
+                    }
+
+
+                    var OnCollision = function (ax, ay, aw, ah, bx, by, bw, bh) {
+                        return ax < bx + bw && ay < by + bh
+                        && bx < ax + aw && by < ay + ah;//return if a position is smaller than
+                    };
+
+                    var paddle =player_T ;
+                    if (OnCollision(paddle.x, paddle.y, paddle.width, paddle.height,
+                            this.x, this.y, this.radius, this.radius)) //if ball collided with paddle
+                    {
+                        var hit_location = (paddle.y + (paddle.height / 2)) - this.y;
+                        if (hit_location < paddle.width / 2) // if hit is on the left of paddle
+                        {
+
+                        }
+                        
+
+                        this.velocity.y *= -1;
+                    }
+                },
+
+          
+                draw: function () {
+                    context.fillRect(this.x, this.y, this.radius, this.radius);
+                }
+
+            };
+
+            
+            function main() {
+                //create the canvas
+                canvas = document.createElement("canvas");
+                canvas.width = WIDTH;
+                canvas.height = HEIGHT;
+                context = canvas.getContext("2d");
+                document.body.appendChild(canvas);
+
+                keystate = {};
+                document.addEventListener("keydown", function (evt) {
+                    keystate[evt.keyCode] = true;
+
+                });
+                document.addEventListener("keyup", function (evt) {
+                    delete keystate[evt.keyCode];
+                });
+
+                init();
+
+                var loop = function () {
+                    update();
+                    draw();
+
+                    window.requestAnimationFrame(loop, canvas);
+                };
+                window.requestAnimationFrame(loop, canvas);
+            }
+
+            function init() { //on start
+                //top
+
+                player_T.x = (WIDTH / 2) - (player_T.width / 2);
+                player_T.y = (player_T.height);
+
+                //bottom
+                //player_B.x = (WIDTH / 2) - (player_B.width / 2);
+                //player_B.y = HEIGHT - (player_B.height*2);
+
+
+
+                ball.x = (WIDTH/ 2)-ball.x;
+                ball.y = (HEIGHT / 2) - ball.y;
+
+                ball.velocity = {
+                    x: 0,
+                    y: -ball.speed
+                };
+            }
+
+                
+            function update() {
+                player_T.update();
+                ball.update();
+            }
+            function draw() {
+
+                //background size and color
+                context.fillRect(0, 0, WIDTH, HEIGHT);
+                context.save();
+                context.fillStyle = "#fff";
+
+                //objects
+                ball.draw();
+                player_T.draw();
+            //    player_B.draw();
+                context.restore();
+            }
+
+            main();
+        </script>
+    </body>
+</html>
