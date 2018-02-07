@@ -103,14 +103,14 @@
                     
                     }//if out of bound vertically, going back  //going to remove for actual game since no borders
 
-                    if (this.x < 0 || this.x + this.radius > WIDTH)
+                    if (this.x < 0 || this.x + this.radius > WIDTH) //horizontal
                     {
-                        var offset = this.velocity.y < 0 ? 0 - this.y : HEIGHT - (this.y + this.radius);
+                        var offset = this.velocity.x < 0 ? 0 - this.x : WIDTH - (this.x + this.radius);
 
                         //if ball is going up, offset is -position, if going down, offset is height - position+radius
-                        this.y += offset;
+                        this.x += offset;
 
-                        this.velocity.y *= -1;
+                        this.velocity.x *= -1;
 
                     }
 
@@ -124,15 +124,32 @@
                     if (OnCollision(paddle.x, paddle.y, paddle.width, paddle.height,
                             this.x, this.y, this.radius, this.radius)) //if ball collided with paddle
                     {
-                        var hit_location = (paddle.y + (paddle.height / 2)) - this.y;
-                        if (hit_location < paddle.width / 2) // if hit is on the left of paddle
+                     
+                        var hit_location = this.x+this.radius;
+
+                        if (hit_location < paddle.x + paddle.width / 2) // if hit is on the left of paddle
                         {
+                            this.velocity.y *= -1;
+                            this.velocity.x = -5;
 
                         }
-                        
 
-                        this.velocity.y *= -1;
-                    }
+
+
+                        else if ((hit_location > paddle.x + paddle.width / 2)) //if hits on the right of paddle
+                        {
+                            this.velocity.y *= -1;
+                            this.velocity.x = 5;
+                        }
+
+                        else // if hits on center
+                        {
+                            this.velocity.y *= -1;
+                            this.velocity.x *= -1;
+                        }
+                    };
+                 
+
                 },
 
           
@@ -188,7 +205,7 @@
 
                 ball.velocity = {
                     x: 0,
-                    y: -ball.speed
+                    y: -5
                 };
             }
 
