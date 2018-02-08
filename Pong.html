@@ -25,6 +25,21 @@
                 height: 400px;
             }
 
+            #Player {
+                position: absolute; 
+                top: 0; 
+                right: 300px; 
+                width: 100px; 
+                text-align:right;
+            }
+
+            #Score {
+                position: absolute;
+                top: 25px;
+                right: 300px;
+                width: 100px;
+                text-align: right;
+            }
 
             canvas{
                 position: absolute;
@@ -46,10 +61,14 @@
         <br />
         <br />
         <textarea id='log' name='log' readonly='readonly'></textarea><br />
+
+        <p id="Player">Player</p>
+        <br />
+        <p id="Score">Score: 0</p>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
         <script src="fancywebsocket.js"></script>
         <script>
-
+       
             //^ style thing to make it on the center;
 
             /// Client connection code from chat room
@@ -84,6 +103,7 @@
                         document.getElementById("Play").disabled = true;
                         log("Connected.");
                         Connected = true;
+                        document.getElementById("Player").innerText = document.getElementById('name').value; //change the player text to name you just typed in
                         main(); // don't start the game until connecteds
                  
                      
@@ -139,8 +159,8 @@
             var speed = 10;
             //moving keys (only top)
             var LeftArrow = 37, RightArrow = 39;
-
-
+            
+            var score = 0;//score
             var Player_Index; // which player/color is the client, will be used to determine which section of server location is it
             var Server_Location; // all the location data the server is hosting. It is a string consist of xy locations of each object(separated by ;) 
             var Player_Location;// location that the player is drawing 
@@ -155,8 +175,8 @@
                     
                         Player_Location = Server_Location[Player_Index].split(","); // spliting player1 x y
          
-                        this.x = Player_Location[1];
-                        this.y = Player_Location[0];
+                        this.x = ~~Player_Location[1];  // YEAH INTEGER RIGHT
+                        this.y = ~~Player_Location[0];
 
 
 
@@ -225,10 +245,17 @@
                       //  log("ax - " + ax + " ay - " +ay +  " aw - " +aw +" ah - " +ah + " bx - " +bx+  " by- " +by+  " bw- " +bw +  " bh- " +bh );
                         if (Player_Index == 1)
                         {
-                           // return ax < bx + bw && ay < by + bh && bx < ax + aw && by < ay + ah;//return if a position is smaller than
-                            return bx > ax && bx < ax + aw && by > ay && by < ay + ah
+           
+                            //Top player:
+                            //1:  (ball y - paddle y) <ball radius+paddle width
+                            //2: bx+bw >ax  ball x is touching paddle x on the left
+                            //3: bx-bw <ax+aw ball x is touching paddle x on the right
 
-                            //205 < 45+30
+                  
+
+
+                            return ((by - ay) < (bw + ah)) && ((bx + bw) > ax) && ((bx - bw) < (ax + aw));
+
                         }
 
                         /* 
@@ -242,39 +269,40 @@
                     };
 
           
-                    if (OnCollision(player_T.x, player_T.y, player_T.width, player_T.height,
+                    if (OnCollision(player_T.x, player_T.y, player_T.width, player_T.height, // ADD ~~ TO CONVERT STRING BACK TO INT GODS DAMN IT JS
                             this.x, this.y, this.radius, this.radius)) //if ball collided with paddle
                     {
-                     //   log("Colliding at : " + player_T.x + "," + player_T.y);
-                    //    log("x: " + player_T.x + ", y: " + player_T.y + " bx: "+this.x +" by: " +this.y +
-                          //  "p height : " +player_T.height) ;
 
-                        //this.velocity.y *= -1;
-                        var hit_location = this.x;
-                        log(hit_location);
-                        if (hit_location < player_T.x + player_T.width / 2) // if hit is on the left of paddle
-                        {
-                            log("C1");
-                            this.velocity.y *= -1;
-                            this.velocity.x = -5;
+                        if (Player_Index == 1) {
 
+                            var hit_location = this.x+ this.radius/2;
+                      //      log(hit_location);
+
+                            if (hit_location < player_T.x + player_T.width / 2) // if hit is on the left of paddle
+                            {
+                          
+                                this.velocity.y *= -1;
+                                this.velocity.x = -5;
+
+                            }
+                                else if ((hit_location > player_T.x + player_T.width / 2)) //if hits on the right of paddle
+                                {
+                                    this.velocity.y *= -1;
+                                    this.velocity.x = 5;
+                                }
+
+
+                                else // if hits on center
+                                {
+                          
+                                    this.velocity.y *= -1;
+                                    this.velocity.x *= -1;
+                                }
                         }
 
+                        score++;
+                        document.getElementById("Score").innerText = "Score: " + score;
 
-
-                        else if ((hit_location > player_T.x + player_T.width / 2)) //if hits on the right of paddle
-                        {
-                            log("C2");
-                            this.velocity.y *= -1;
-                            this.velocity.x = 5;
-                        }
-
-                        else // if hits on center
-                        {
-                            log("C3");
-                            this.velocity.y *= -1;
-                            this.velocity.x *= -1;
-                        }
                     };
 
 
@@ -289,12 +317,6 @@
 
 
             function main() {
-                //legistics
-
-          //
-            //    log('Connecting...');
-
-
 
 
                 //create the canvas
