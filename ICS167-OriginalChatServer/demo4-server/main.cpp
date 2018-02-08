@@ -15,7 +15,7 @@ public:
 		paddleWidth = 100, paddleHeight = 30, 
 		ballSpeed = 10, paddleSpeed = 10, 
 		paddleOffsetLimit = 250, 
-		p0x = 45, p0y = 300, spawnp0x = 45, spawnp0y = 300;//p0x == paddle num 0 x position
+		p0x = 45, p0y = 300, spawnp0x = 45, spawnp0y = 300, p0score = 0;//p0x == paddle num 0 x position
 	//void resetGame();
 	//void readInput(string input);
 	//void movePaddle(int player, int inputSelection);
@@ -26,11 +26,12 @@ private:
 
 public :void resetGame() {
 	// place ball at center of play space and initialize its velocity
+		p0score = 0;
 		ballPosX = 300;
 		ballPosY = 300;
 		double angleSelection = 3.14159266/2.0;//Random between [0 and 2 pi)
-		ballVelX = ballSpeed * cos(angleSelection);
-		ballVelY = ballSpeed * sin(angleSelection);
+		ballVelX = ballSpeed * -sin(angleSelection);
+		ballVelY = ballSpeed * cos(angleSelection);
 	}
 		void readInput(string input) {
 			//Player 0 info
@@ -91,6 +92,62 @@ public :void resetGame() {
 		}
 		void updateBallPositions() {
 			//nah, one step at a time
+			bool hitAPaddle = false, hitAWall = false;
+			//first check ball change to see if it crossed a critical line. For one paddle that is only a change across 60 from above to below
+			if(ballPosX > 60 && (ballPosX + ballVelX) <= 60){
+				cout << "checking collisions with paddle 0.\n";
+				//check collision with paddle 0
+				bool slopeIsApproxInfinite = abs(ballVelY) < 0.005;
+				cout << ballVelX << '/' << ballVelY << '\n';
+				float m = -ballVelX / ballVelY;
+				int estimatedPointOfCollision = !slopeIsApproxInfinite ? int((60 - ballPosX) / m) : ballPosY;
+				cout << "estimate point of collision at: " << estimatedPointOfCollision << '\n';
+				if(abs(estimatedPointOfCollision - p0y) <= paddleWidth/2){
+					//a collision happened!
+					hitAPaddle = true;
+					++p0score;
+					//assigning a new velocity based on where on the paddle the collision occurred
+					cout << "p0y = " << p0y << " paddleWidth/2.0 = " << paddleWidth / 2.0 << '\n';
+					double angleSelection = 210 + 120.0/paddleWidth * (estimatedPointOfCollision - p0y + paddleWidth/2.0);//angle between 210 and 330 depending on where hit paddle
+					cout << "angleSelection = " << angleSelection << '\n';
+					ballVelX = ballSpeed * -sin(angleSelection * 3.14159266 / 180.0);
+					ballVelY = ballSpeed * cos(angleSelection * 3.14159266 / 180.0);
+					cout << "ballVelX = " << ballVelX << " ballVelY = " << ballVelY << '\n';
+					//assigning ball position to the point of collision
+					ballPosX = 60;
+					ballPosY = estimatedPointOfCollision;
+					//but now we need to calculate next ball position
+					//might as well let it be at the estimate point of collision instead of any fancier prediction
+
+				}
+			}
+			
+			if(!hitAPaddle){
+				// temporary code to reflect ball back if it hits a wall
+				//p1 facing wall
+				if (ballPosY >= 600) {
+					ballVelY *= -1;
+				}
+				//hitAWall = true;
+				//p2 facing wall
+				if (ballPosX >= 600) {
+					ballVelX *= -1;
+				}
+				//p3 facing wall
+				if (ballPosY <= 0) {
+					ballVelY *= -1;
+				}
+
+				//reset game if ya done goofed
+				if (ballPosX <= 0) {
+					resetGame();
+				}
+			}
+
+			if(!hitAPaddle){
+				ballPosX += ballVelX;
+				ballPosY += ballVelY;
+			}
 		}
 		string generateStateStr() {
 			ostringstream toReturn;
@@ -132,6 +189,7 @@ void closeHandler(int clientID){
 void messageHandler(int clientID, string message){
     ostringstream os;
 	pong.readInput(message);
+	pong.updateBallPositions();
     os << "Stranger " << clientID << " says: " << message;
 
     vector<int> clientIDs = server.getClientIDs();
