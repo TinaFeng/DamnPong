@@ -4,6 +4,27 @@
         <title>Pong</title>
 
         <style>
+
+            #ip {
+                text-align: center;
+                line-height: 45px;
+                vertical-align: middle;
+                
+            }
+            
+
+            #name {
+                text-align: center;
+                line-height: 45px;
+                vertical-align: middle;
+            }
+
+            #log {
+                width: 300px;
+                height: 400px
+            }
+
+
             canvas{
                 position: absolute;
                 margin:auto;
@@ -15,8 +36,77 @@
         </style>
 	</head>
     <body>
+        Address:<input type="text" id="ip" name=" ip">
+        <br />
+        <br />
+        Nickname: <input type="text" id="name" name="name">
+
+        <input type="button" id="Play" name="Play" onclick="connect();"value="Play">
+        <br />
+        <br />
+        <textarea id='log' name='log' readonly='readonly'></textarea><br />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        <script src="fancywebsocket.js"></script>
         <script>
+
             //^ style thing to make it on the center;
+            var Server;
+
+            var Connected = false;
+            function log(text) {
+                $log = $('#log');
+                //Add text to log
+                $log.append(($log.val() ? "\n" : '') + text);
+                //Autoscroll
+                $log[0].scrollTop = $log[0].scrollHeight - $log[0].clientHeight;
+            }
+
+
+            function send(text) {
+                Server.send('message', text);
+            }
+
+            function connect() {
+
+                if (document.getElementById('ip').value != ''&& document.getElementById('name').value != '') //if IP and name are not empty
+                {
+
+
+                    log('Connecting...');
+                    Server = new FancyWebSocket('ws://' + document.getElementById('ip').value + ':' + 8000);
+
+
+                    //Let the user know we're connected
+                    Server.bind('open', function () {
+                        document.getElementById("Play").disabled = true;
+                        log("Connected.");
+                        Connected = true;
+                        main();
+                    });
+
+                    //OH NOES! Disconnection occurred.
+                    Server.bind('close', function (data) {
+                        document.getElementById("Play").disabled = false;
+                        log("Disconnected.");
+                    });
+
+                    //Log any messages sent from server
+                    Server.bind('message', function (payload) {
+                        log(payload);
+
+                        Server_Location = payload;
+                    });
+
+                    Server.connect();
+                }
+                else
+                {
+                    log("IP or Nickname cannot be empty.");
+                }
+      
+            }
+
+            //server stuff ^
             var WIDTH = 600, HEIGHT = 600, pi = Math.PI;
             var canvas, context, keystate;
             var player_T, ball;
@@ -25,6 +115,7 @@
             //moving keys (only top)
             var LeftArrow = 37, RightArrow = 39;
 
+            var Server_Location;
 
             player_T = {
                 x: null,
@@ -33,15 +124,23 @@
                 height :20,
 
                 update: function () {
-                    if (keystate[LeftArrow]) this.x -= speed;
-                    if (keystate[RightArrow]) this.x += speed;
+                    if (keystate[LeftArrow]) {
+                  //      this.x -= speed;
+                        send('02');
 
+                    }
+                    else if (keystate[RightArrow]) {
+
+
+               //         this.x += speed;
+                        send('00');
+                    }
                 },
                 draw: function () {
                     context.fillStyle = 'red';
                     context.fillRect(this.x, this.y, this.width, this.height);
 
-                  
+
                 }
             };
             //player_B = {
@@ -51,13 +150,13 @@
             //    height: 20,
 
             //    update: function () {
-        
+
             //    },
             //    draw: function () {
             //        context.fillStyle = 'blue';
             //        context.fillRect(this.x, this.y, this.width, this.height);
 
-                 
+
             //    }
             //};
             //player_L = {
@@ -99,8 +198,8 @@
                         //if ball is going up, offset is -position, if going down, offset is height - position+radius
                         this.y += offset;
 
-                        this.velocity.y *= -1; 
-                    
+                        this.velocity.y *= -1;
+
                     }//if out of bound vertically, going back  //going to remove for actual game since no borders
 
                     if (this.x < 0 || this.x + this.radius > WIDTH) //horizontal
@@ -124,7 +223,7 @@
                     if (OnCollision(paddle.x, paddle.y, paddle.width, paddle.height,
                             this.x, this.y, this.radius, this.radius)) //if ball collided with paddle
                     {
-                     
+
                         var hit_location = this.x+this.radius;
 
                         if (hit_location < paddle.x + paddle.width / 2) // if hit is on the left of paddle
@@ -148,25 +247,36 @@
                             this.velocity.x *= -1;
                         }
                     };
-                 
+
 
                 },
 
-          
+
                 draw: function () {
                     context.fillRect(this.x, this.y, this.radius, this.radius);
                 }
 
             };
 
-            
+
             function main() {
+                //legistics
+
+          //
+            //    log('Connecting...');
+
+
+
+
                 //create the canvas
                 canvas = document.createElement("canvas");
                 canvas.width = WIDTH;
                 canvas.height = HEIGHT;
                 context = canvas.getContext("2d");
                 document.body.appendChild(canvas);
+
+
+
 
                 keystate = {};
                 document.addEventListener("keydown", function (evt) {
@@ -209,7 +319,7 @@
                 };
             }
 
-                
+
             function update() {
                 player_T.update();
                 ball.update();
@@ -228,7 +338,8 @@
                 context.restore();
             }
 
-            main();
+            
+         
         </script>
     </body>
 </html>
