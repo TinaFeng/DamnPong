@@ -1,2 +1,4 @@
 ﻿  main.cpp
-  demo4-server.vcxproj -> C:\Users\Guoxi\Source\Repos\ICS167-SocketDemonstration\x64\Debug\demo4-server.exe
+c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\main.cpp(28): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\main.cpp(29): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  demo4-server.vcxproj -> C:\Users\Owner\Documents\GitHub\DamnPong\ICS167-OriginalChatServer\x64\Debug\demo4-server.exe
