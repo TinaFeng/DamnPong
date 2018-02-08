@@ -1,4 +1,5 @@
-﻿<html>
+﻿
+<html>
 	<head>
        <meta charset="utf-8">
         <title>Pong</title>
@@ -21,7 +22,7 @@
 
             #log {
                 width: 300px;
-                height: 400px
+                height: 400px;
             }
 
 
@@ -41,7 +42,7 @@
         <br />
         Nickname: <input type="text" id="name" name="name">
 
-        <input type="button" id="Play" name="Play" onclick="connect();"value="Play">
+        <input type="button" id="Play" name="Play" onclick="connect();" value="Play">
         <br />
         <br />
         <textarea id='log' name='log' readonly='readonly'></textarea><br />
@@ -70,7 +71,7 @@
 
                 if (document.getElementById('ip').value != ''&& document.getElementById('name').value != '') //if IP and name are not empty
                 {
-
+              
 
                     log('Connecting...');
                     Server = new FancyWebSocket('ws://' + document.getElementById('ip').value + ':' + 8000);
@@ -81,7 +82,7 @@
                         document.getElementById("Play").disabled = true;
                         log("Connected.");
                         Connected = true;
-                        main();
+                        main(); // don't start the game until connected
                     });
 
                     //OH NOES! Disconnection occurred.
@@ -93,8 +94,9 @@
                     //Log any messages sent from server
                     Server.bind('message', function (payload) {
                         log(payload);
-
-                        Server_Location = payload;
+                        //Payload is the whole string, Server_Location is data for individual object(ball, then player1, future players etc split by ";")
+                        Server_Location = payload.split(";");
+                    
                     });
 
                     Server.connect();
@@ -116,7 +118,7 @@
             var LeftArrow = 37, RightArrow = 39;
 
             var Server_Location;
-
+            var Plauer_Location;
             player_T = {
                 x: null,
                 y: null,
@@ -136,9 +138,11 @@
                         send('00');
                     }
                 },
-                draw: function () {
+                draw: function () {  //300,300;45,290
                     context.fillStyle = 'red';
-                    context.fillRect(this.x, this.y, this.width, this.height);
+                    Player_Location = Server_Location[1].split(","); // spliting player1 x y
+                    //index will change depends on which side the paddle is
+                    context.fillRect(Player_Location[1], Player_Location[0], this.width, this.height);
 
 
                 }
