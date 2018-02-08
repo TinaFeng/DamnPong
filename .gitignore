@@ -1,0 +1,11 @@
+*.pdb
+ICS167-OriginalChatServer/x64/Debug/demo4-server.pdb
+ICS167-OriginalChatServer/x64/Debug/demo4-server.exe
+*.obj
+ICS167-OriginalChatServer/demo4-server/x64/Debug/base64.obj
+*.suo
+*.suo
+ICS167-OriginalChatServer/.vs/ICS167-SocketDemo/v15/ipch/AutoPCH/8f11018e8915ee46/WEBSOCKET.ipch
+*.db
+*.tlog
+*.tlog

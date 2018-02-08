@@ -51,6 +51,8 @@
         <script>
 
             //^ style thing to make it on the center;
+
+            /// Client connection code from chat room
             var Server;
 
             var Connected = false;
@@ -82,7 +84,9 @@
                         document.getElementById("Play").disabled = true;
                         log("Connected.");
                         Connected = true;
-                        main(); // don't start the game until connected
+                        main(); // don't start the game until connecteds
+                 
+                     
                     });
 
                     //OH NOES! Disconnection occurred.
@@ -94,9 +98,28 @@
                     //Log any messages sent from server
                     Server.bind('message', function (payload) {
                         log(payload);
-                        //Payload is the whole string, Server_Location is data for individual object(ball, then player1, future players etc split by ";")
-                        Server_Location = payload.split(";");
-                    
+                        if (payload.toString().length == 1) {
+
+                            if (payload.toString() == "0") {
+                                Player_Index = 1;
+                       
+                            }
+                            else if (payload.toString() == "1") {
+                                Player_Index = 2;
+                            }
+                            else if (payload.toString() == "2") {
+                                Player_Index = 3;
+                            }
+                            else if (payload.toString() == "3") {
+                                Player_Index = 4;
+                            }
+                        }
+                        else {
+                            
+                            //if the server didn't send player location, it should be the states of the game, server_Location will split the states into
+                            //individual object(ball, then player1, future players etc split by ";")
+                            Server_Location = payload.split(";");
+                        }
                     });
 
                     Server.connect();
@@ -117,74 +140,61 @@
             //moving keys (only top)
             var LeftArrow = 37, RightArrow = 39;
 
-            var Server_Location;
-            var Plauer_Location;
+
+            var Player_Index; // which player/color is the client, will be used to determine which section of server location is it
+            var Server_Location; // all the location data the server is hosting. It is a string consist of xy locations of each object(separated by ;) 
+            var Player_Location;// location that the player is drawing 
+
             player_T = {
                 x: null,
                 y: null,
                 width : 100,
-                height :20,
+                height :30,
 
                 update: function () {
-                    if (keystate[LeftArrow]) {
-                  //      this.x -= speed;
-                        send('02');
+                    
+                        Player_Location = Server_Location[Player_Index].split(","); // spliting player1 x y
+         
+                        this.x = Player_Location[1];
+                        this.y = Player_Location[0];
 
+
+
+              
+                    if (keystate[LeftArrow]) {
+        
+                  
+                        send((Player_Index - 1).toString() + "2");
                     }
                     else if (keystate[RightArrow]) {
-
-
-               //         this.x += speed;
-                        send('00');
+                
+                        send((Player_Index - 1).toString() + "0");
                     }
+
+           
+                    //index will change depends on which side the paddle is
                 },
                 draw: function () {  //300,300;45,290
-                    context.fillStyle = 'red';
-                    Player_Location = Server_Location[1].split(","); // spliting player1 x y
-                    //index will change depends on which side the paddle is
-                    context.fillRect(Player_Location[1], Player_Location[0], this.width, this.height);
+              
+                    if (Player_Index == 1) {
+                        context.fillStyle = 'red';
+                    }
+                    else if (Player_Index === 2) {
+                        context.fillStyle = 'blue';
+                    }
+                    else if (Player_Index === 3) {
+                        context.fillStyle = 'green';
+                    }
+                    else if (Player_Index === 4) {
+                        context.fillStyle = 'yellow';
+                    }
+      
+                   context.fillRect(Player_Location[1], Player_Location[0], this.width, this.height);
 
 
                 }
             };
-            //player_B = {
-            //    x: null,
-            //    y: null,
-            //    width: 100,
-            //    height: 20,
-
-            //    update: function () {
-
-            //    },
-            //    draw: function () {
-            //        context.fillStyle = 'blue';
-            //        context.fillRect(this.x, this.y, this.width, this.height);
-
-
-            //    }
-            //};
-            //player_L = {
-            //    x: null,
-            //    y: null,
-            //    width: 100,
-            //    height: 20,
-
-            //    update: function () { },
-            //    draw: function () {
-            //        context.fillRect(this.x, this.y, this.width, this.height);
-            //    }
-            //};
-            //player_R = {
-            //    x: null,
-            //    y: null,
-            //    width: 100,
-            //    height: 20,
-
-            //    update: function () { },
-            //    draw: function () {
-            //        context.fillRect(this.x, this.y, this.width, this.height)
-            //    }
-            //};
+          
             ball = {
                 x: null,
                 y: null,
@@ -197,41 +207,54 @@
 
                     if (this.y <0 || this.y+this.radius > HEIGHT)
                     {
-                        var offset = this.velocity.y < 0 ? 0 - this.y : HEIGHT - (this.y + this.radius);
-
-                        //if ball is going up, offset is -position, if going down, offset is height - position+radius
-                        this.y += offset;
-
+      
                         this.velocity.y *= -1;
 
                     }//if out of bound vertically, going back  //going to remove for actual game since no borders
 
                     if (this.x < 0 || this.x + this.radius > WIDTH) //horizontal
                     {
-                        var offset = this.velocity.x < 0 ? 0 - this.x : WIDTH - (this.x + this.radius);
-
-                        //if ball is going up, offset is -position, if going down, offset is height - position+radius
-                        this.x += offset;
-
+       
                         this.velocity.x *= -1;
 
                     }
 
 
                     var OnCollision = function (ax, ay, aw, ah, bx, by, bw, bh) {
-                        return ax < bx + bw && ay < by + bh
-                        && bx < ax + aw && by < ay + ah;//return if a position is smaller than
+                
+                      //  log("ax - " + ax + " ay - " +ay +  " aw - " +aw +" ah - " +ah + " bx - " +bx+  " by- " +by+  " bw- " +bw +  " bh- " +bh );
+                        if (Player_Index == 1)
+                        {
+                           // return ax < bx + bw && ay < by + bh && bx < ax + aw && by < ay + ah;//return if a position is smaller than
+                            return bx > ax && bx < ax + aw && by > ay && by < ay + ah
+
+                            //205 < 45+30
+                        }
+
+                        /* 
+
+                        The x position of the ball is greater than the x position of the brick.
+                        The x position of the ball is less than the x position of the brick plus its width.
+                        The y position of the ball is greater than the y position of the brick.
+                        The y position of the ball is less than the y position of the brick plus its height.
+                        */
+              
                     };
 
-                    var paddle =player_T ;
-                    if (OnCollision(paddle.x, paddle.y, paddle.width, paddle.height,
+          
+                    if (OnCollision(player_T.x, player_T.y, player_T.width, player_T.height,
                             this.x, this.y, this.radius, this.radius)) //if ball collided with paddle
                     {
+                     //   log("Colliding at : " + player_T.x + "," + player_T.y);
+                    //    log("x: " + player_T.x + ", y: " + player_T.y + " bx: "+this.x +" by: " +this.y +
+                          //  "p height : " +player_T.height) ;
 
-                        var hit_location = this.x+this.radius;
-
-                        if (hit_location < paddle.x + paddle.width / 2) // if hit is on the left of paddle
+                        //this.velocity.y *= -1;
+                        var hit_location = this.x;
+                        log(hit_location);
+                        if (hit_location < player_T.x + player_T.width / 2) // if hit is on the left of paddle
                         {
+                            log("C1");
                             this.velocity.y *= -1;
                             this.velocity.x = -5;
 
@@ -239,14 +262,16 @@
 
 
 
-                        else if ((hit_location > paddle.x + paddle.width / 2)) //if hits on the right of paddle
+                        else if ((hit_location > player_T.x + player_T.width / 2)) //if hits on the right of paddle
                         {
+                            log("C2");
                             this.velocity.y *= -1;
                             this.velocity.x = 5;
                         }
 
                         else // if hits on center
                         {
+                            log("C3");
                             this.velocity.y *= -1;
                             this.velocity.x *= -1;
                         }
@@ -281,7 +306,6 @@
 
 
 
-
                 keystate = {};
                 document.addEventListener("keydown", function (evt) {
                     keystate[evt.keyCode] = true;
@@ -303,15 +327,13 @@
             }
 
             function init() { //on start
-                //top
+              
+                if (Player_Index == 1)
+                {
+                    player_T.x =45;
+                    player_T.y = 300;
 
-                player_T.x = (WIDTH / 2) - (player_T.width / 2);
-                player_T.y = (player_T.height);
-
-                //bottom
-                //player_B.x = (WIDTH / 2) - (player_B.width / 2);
-                //player_B.y = HEIGHT - (player_B.height*2);
-
+                }
 
 
                 ball.x = (WIDTH/ 2)-ball.x;

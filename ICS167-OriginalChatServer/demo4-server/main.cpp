@@ -11,7 +11,11 @@ webSocket server;
 
 class PongGame {
 public:
-	int ballPosX, ballPosY, lvlWidth = 600, lvlHeight = 600, paddleWidth = 100, paddleHeight = 30, ballSpeed = 10, paddleSpeed = 10, paddleOffsetLimit = 250, p0x = 45, p0y = 300, spawnp0x = 45, spawnp0y = 300;//p0x == paddle num 0 x position
+	int ballPosX, ballPosY, lvlWidth = 600, lvlHeight = 600, 
+		paddleWidth = 100, paddleHeight = 30, 
+		ballSpeed = 10, paddleSpeed = 10, 
+		paddleOffsetLimit = 250, 
+		p0x = 45, p0y = 300, spawnp0x = 45, spawnp0y = 300;//p0x == paddle num 0 x position
 	//void resetGame();
 	//void readInput(string input);
 	//void movePaddle(int player, int inputSelection);
