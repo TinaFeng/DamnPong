@@ -7,4 +7,5 @@ c:\users\christian\damnpong\ics167-originalchatserver\demo4-server\main.cpp(151)
 c:\users\christian\damnpong\ics167-originalchatserver\demo4-server\main.cpp(152): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
 c:\users\christian\damnpong\ics167-originalchatserver\demo4-server\main.cpp(213): warning C4244: 'initializing': conversion from 'double' to 'time_t', possible loss of data
 c:\users\christian\damnpong\ics167-originalchatserver\demo4-server\main.cpp(239): warning C4244: '=': conversion from 'double' to 'time_t', possible loss of data
+  LINK : C:\Users\Christian\DamnPong\ICS167-OriginalChatServer\x64\Debug\demo4-server.exe not found or not built by the last incremental link; performing full link
   demo4-server.vcxproj -> C:\Users\Christian\DamnPong\ICS167-OriginalChatServer\x64\Debug\demo4-server.exe

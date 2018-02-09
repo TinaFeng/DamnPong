@@ -154,7 +154,7 @@ public :void resetGame() {
 		}
 		string generateStateStr() {
 			ostringstream toReturn;
-			toReturn << ballPosY << ',' << ballPosX << ';' << p0x << ',' << p0y;
+			toReturn << ballPosY << ',' << ballPosX << ';' << p0x << ',' << p0y << ',' << p0score;
 			return toReturn.str();
 		}
 
@@ -241,11 +241,8 @@ void periodicHandler(){
 }
 
 int main(int argc, char *argv[]){
-    int port;
+    int port = 8000;
 	buffer = "05";
-
-    cout << "Please set server port: ";
-    cin >> port;
 
     /* set event handler */
     server.setOpenHandler(openHandler);

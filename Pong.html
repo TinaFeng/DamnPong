@@ -183,6 +183,12 @@
                 
                         this.x = ~~Player_Location[1];  // YEAH INTEGER RIGHT
                         this.y = ~~Player_Location[0];
+                        
+                        if (this.score != ~~Player_Location[2])
+                        {
+                            this.score = ~~Player_Location[2];
+                            document.getElementById('Score').innerHTML = "Score: " + this.score;
+                        }
 
                     }
                     
