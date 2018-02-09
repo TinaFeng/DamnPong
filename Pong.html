@@ -97,15 +97,16 @@
                     log('Connecting...');
                     Server = new FancyWebSocket('ws://' + document.getElementById('ip').value + ':' + 8000);
 
-
+                    
                     //Let the user know we're connected
                     Server.bind('open', function () {
                         document.getElementById("Play").disabled = true;
                         log("Connected.");
                         Connected = true;
                         document.getElementById("Player").innerText = document.getElementById('name').value; //change the player text to name you just typed in
+                    
                         main(); // don't start the game until connecteds
-                 
+                        
                      
                     });
 
@@ -164,7 +165,7 @@
             var Player_Index; // which player/color is the client, will be used to determine which section of server location is it
             var Server_Location; // all the location data the server is hosting. It is a string consist of xy locations of each object(separated by ;) 
             var Player_Location;// location that the player is drawing 
-
+            var Ball_Location;//location of ball
             player_T = {
                 x: null,
                 y: null,
@@ -173,13 +174,20 @@
 
                 update: function () {
                     
+       
+
+                    if (Server_Location != null)
+                    {
+
                         Player_Location = Server_Location[Player_Index].split(","); // spliting player1 x y
-         
+                
                         this.x = ~~Player_Location[1];  // YEAH INTEGER RIGHT
                         this.y = ~~Player_Location[0];
 
-
-
+                    }
+                    
+                    
+  
               
                     if (keystate[LeftArrow]) {
         
@@ -208,10 +216,10 @@
                     else if (Player_Index === 4) {
                         context.fillStyle = 'yellow';
                     }
-      
-                   context.fillRect(Player_Location[1], Player_Location[0], this.width, this.height);
+                    if (Server_Location != null) {
+                        context.fillRect(Player_Location[1], Player_Location[0], this.width, this.height);
 
-
+                    }
                 }
             };
           
@@ -222,88 +230,95 @@
                 radius: 10,
                 speed: 5,
                 update: function () {
-                    this.x += this.velocity.x;
-                    this.y += this.velocity.y;
 
-                    if (this.y <0 || this.y+this.radius > HEIGHT)
+                    if (Server_Location != null)
                     {
-      
-                        this.velocity.y *= -1;
-
-                    }//if out of bound vertically, going back  //going to remove for actual game since no borders
-
-                    if (this.x < 0 || this.x + this.radius > WIDTH) //horizontal
-                    {
-       
-                        this.velocity.x *= -1;
+                        Ball_Location = Server_Location[0].split(",");
+                        this.x = ~~Ball_Location[0];
+                        this.y = ~~Ball_Location[1];
 
                     }
+              
+
+                    //if (this.y <0 || this.y+this.radius > HEIGHT)
+                    //{
+      
+                    //    this.velocity.y *= -1;
+
+                    //}//if out of bound vertically, going back  //going to remove for actual game since no borders
+
+                    //if (this.x < 0 || this.x + this.radius > WIDTH) //horizontal
+                    //{
+       
+                    //    this.velocity.x *= -1;
+
+                    //}
 
 
-                    var OnCollision = function (ax, ay, aw, ah, bx, by, bw, bh) {
+                    //var OnCollision = function (ax, ay, aw, ah, bx, by, bw, bh) {
                 
-                      //  log("ax - " + ax + " ay - " +ay +  " aw - " +aw +" ah - " +ah + " bx - " +bx+  " by- " +by+  " bw- " +bw +  " bh- " +bh );
-                        if (Player_Index == 1)
-                        {
+                    //  //  log("ax - " + ax + " ay - " +ay +  " aw - " +aw +" ah - " +ah + " bx - " +bx+  " by- " +by+  " bw- " +bw +  " bh- " +bh );
+                    //    if (Player_Index == 1)
+                    //    {
            
-                            //Top player:
-                            //1:  (ball y - paddle y) <ball radius+paddle width
-                            //2: bx+bw >ax  ball x is touching paddle x on the left
-                            //3: bx-bw <ax+aw ball x is touching paddle x on the right
+                    //        //Top player:
+                    //        //1:  (ball y - paddle y) <ball radius+paddle width
+                    //        //2: bx+bw >ax  ball x is touching paddle x on the left
+                    //        //3: bx-bw <ax+aw ball x is touching paddle x on the right
 
                   
 
 
-                            return ((by - ay) < (bw + ah)) && ((bx + bw) > ax) && ((bx - bw) < (ax + aw));
+                    //        return ((by - ay) < (bw + ah)) && ((bx + bw) > ax) && ((bx - bw) < (ax + aw));
 
-                        }
+                    //    }
 
-                        /* 
+                    //    /* 
 
-                        The x position of the ball is greater than the x position of the brick.
-                        The x position of the ball is less than the x position of the brick plus its width.
-                        The y position of the ball is greater than the y position of the brick.
-                        The y position of the ball is less than the y position of the brick plus its height.
-                        */
+                    //    The x position of the ball is greater than the x position of the brick.
+                    //    The x position of the ball is less than the x position of the brick plus its width.
+                    //    The y position of the ball is greater than the y position of the brick.
+                    //    The y position of the ball is less than the y position of the brick plus its height.
+                    //    */
               
-                    };
+                    //};
 
           
-                    if (OnCollision(player_T.x, player_T.y, player_T.width, player_T.height, // ADD ~~ TO CONVERT STRING BACK TO INT GODS DAMN IT JS
-                            this.x, this.y, this.radius, this.radius)) //if ball collided with paddle
-                    {
+                    //if (OnCollision(player_T.x, player_T.y, player_T.width, player_T.height, // ADD ~~ TO CONVERT STRING BACK TO INT GODS DAMN IT JS
+                    //        this.x, this.y, this.radius, this.radius)) //if ball collided with paddle
+                    //{
 
-                        if (Player_Index == 1) {
+                    //    if (Player_Index == 1) {
 
-                            var hit_location = this.x+ this.radius/2;
-                      //      log(hit_location);
+                    //        var hit_location = this.x+ this.radius/2;
+                    //  //      log(hit_location);
 
-                            if (hit_location < player_T.x + player_T.width / 2) // if hit is on the left of paddle
-                            {
+                    //        if (hit_location < player_T.x + player_T.width / 2) // if hit is on the left of paddle
+                    //        {
                           
-                                this.velocity.y *= -1;
-                                this.velocity.x = -5;
+                    //            this.velocity.y *= -1;
+                    //            this.velocity.x = -5;
 
-                            }
-                                else if ((hit_location > player_T.x + player_T.width / 2)) //if hits on the right of paddle
-                                {
-                                    this.velocity.y *= -1;
-                                    this.velocity.x = 5;
-                                }
+                    //        }
+                    //            else if ((hit_location > player_T.x + player_T.width / 2)) //if hits on the right of paddle
+                    //            {
+                    //                this.velocity.y *= -1;
+                    //                this.velocity.x = 5;
+                    //            }
 
 
-                                else // if hits on center
-                                {
+                    //            else // if hits on center
+                    //            {
                           
-                                    this.velocity.y *= -1;
-                                    this.velocity.x *= -1;
-                                }
-                        }
+                    //                this.velocity.y *= -1;
+                    //                this.velocity.x *= -1;
+                    //            }
+                    //    }
 
-                        score++;
-                        document.getElementById("Score").innerText = "Score: " + score;
+                    //    score++;
+                    //    document.getElementById("Score").innerText = "Score: " + score;
 
-                    };
+                    //};
 
 
                 },
@@ -318,7 +333,7 @@
 
             function main() {
 
-
+             
                 //create the canvas
                 canvas = document.createElement("canvas");
                 canvas.width = WIDTH;
@@ -327,7 +342,7 @@
                 document.body.appendChild(canvas);
 
 
-
+            
                 keystate = {};
                 document.addEventListener("keydown", function (evt) {
                     keystate[evt.keyCode] = true;
@@ -336,16 +351,21 @@
                 document.addEventListener("keyup", function (evt) {
                     delete keystate[evt.keyCode];
                 });
-
+             
                 init();
 
+             
                 var loop = function () {
+           
                     update();
+          
                     draw();
+
 
                     window.requestAnimationFrame(loop, canvas);
                 };
                 window.requestAnimationFrame(loop, canvas);
+   
             }
 
             function init() { //on start
@@ -358,19 +378,19 @@
                 }
 
 
-                ball.x = (WIDTH/ 2)-ball.x;
-                ball.y = (HEIGHT / 2) - ball.y;
+                ball.x = 300;
+                ball.y = 300;
 
-                ball.velocity = {
-                    x: 0,
-                    y: -5
-                };
+       
             }
 
 
             function update() {
+   
                 player_T.update();
+  
                 ball.update();
+     
             }
             function draw() {
 
