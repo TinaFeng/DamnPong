@@ -1,4 +1,5 @@
-﻿  main.cpp
+﻿cl : Command line warning D9028: minimal rebuild failure, reverting to normal build
+  main.cpp
 c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\main.cpp(33): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\main.cpp(34): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\main.cpp(115): warning C4244: '=': conversion from 'double' to 'float', possible loss of data

@@ -94,8 +94,8 @@ public :void resetGame() {
 			//nah, one step at a time
 			bool hitAPaddle = false;
 			//first check ball change to see if it crossed a critical line. For one paddle that is only a change across 60 from above to below
-			//cout << "		ballPosX = " << ballPosX << " ballVelX = " << ballVelX << '\n';
-			if(ballPosX > 60 && (ballPosX + ballVelX) <= 60){
+			cout << "		ballPosX = " << ballPosX << " ballVelX = " << ballVelX << '\n';
+			if(ballPosX >= 60 && (ballPosX + ballVelX) <= 60){
 				cout << "\n???checking collisions with paddle 0???\n";
 				//check collision with paddle 0
 				bool slopeIsApproxInfinite = abs(ballVelY) < 0.005;
