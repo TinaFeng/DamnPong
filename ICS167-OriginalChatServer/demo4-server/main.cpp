@@ -92,23 +92,25 @@ public :void resetGame() {
 		}
 		void updateBallPositions() {
 			//nah, one step at a time
-			bool hitAPaddle = false, hitAWall = false;
+			bool hitAPaddle = false;
 			//first check ball change to see if it crossed a critical line. For one paddle that is only a change across 60 from above to below
+			//cout << "		ballPosX = " << ballPosX << " ballVelX = " << ballVelX << '\n';
 			if(ballPosX > 60 && (ballPosX + ballVelX) <= 60){
-				cout << "checking collisions with paddle 0.\n";
+				cout << "\n???checking collisions with paddle 0???\n";
 				//check collision with paddle 0
 				bool slopeIsApproxInfinite = abs(ballVelY) < 0.005;
 				cout << ballVelX << '/' << ballVelY << '\n';
-				float m = -ballVelX / ballVelY;
-				int estimatedPointOfCollision = !slopeIsApproxInfinite ? int((60 - ballPosX) / m) : ballPosY;
+				float m = ballVelX / ballVelY;
+				int estimatedPointOfCollision = !slopeIsApproxInfinite ? ballPosY + int((ballPosX - 60) * m) : ballPosY;
 				cout << "estimate point of collision at: " << estimatedPointOfCollision << '\n';
 				if(abs(estimatedPointOfCollision - p0y) <= paddleWidth/2){
 					//a collision happened!
+					cout << "---A collision with paddle 0 has occured!---\n";
 					hitAPaddle = true;
 					++p0score;
 					//assigning a new velocity based on where on the paddle the collision occurred
 					cout << "p0y = " << p0y << " paddleWidth/2.0 = " << paddleWidth / 2.0 << '\n';
-					double angleSelection = 210 + 120.0/paddleWidth * (estimatedPointOfCollision - p0y + paddleWidth/2.0);//angle between 210 and 330 depending on where hit paddle
+					double angleSelection = 210 + 120.0 / paddleWidth * (estimatedPointOfCollision - p0y + paddleWidth / 2.0);//angle between 210 and 330 depending on where hit paddle
 					cout << "angleSelection = " << angleSelection << '\n';
 					ballVelX = ballSpeed * -sin(angleSelection * 3.14159266 / 180.0);
 					ballVelY = ballSpeed * cos(angleSelection * 3.14159266 / 180.0);
@@ -151,7 +153,7 @@ public :void resetGame() {
 		}
 		string generateStateStr() {
 			ostringstream toReturn;
-			toReturn << ballPosX << ',' << ballPosY << ';' << p0x << ',' << p0y;
+			toReturn << ballPosY << ',' << ballPosX << ';' << p0x << ',' << p0y;
 			return toReturn.str();
 		}
 
@@ -203,6 +205,9 @@ void messageHandler(int clientID, string message){
 /* called once per select() loop */
 void periodicHandler(){
     static time_t next = time(NULL) + 10;
+	static unsigned long long int kappa = 0;
+	//std::cout << kappa++;
+
     time_t current = time(NULL);
     if (current >= next){
         ostringstream os;
