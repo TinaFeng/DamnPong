@@ -118,7 +118,7 @@
 
                     //Log any messages sent from server
                     Server.bind('message', function (payload) {
-                        log(payload);
+                        //log(payload);
                         if (payload.toString().length == 1) {
 
                             if (payload.toString() == "0") {

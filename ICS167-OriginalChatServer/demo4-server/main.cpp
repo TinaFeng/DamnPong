@@ -8,6 +8,7 @@
 using namespace std;
 
 webSocket server;
+string buffer;
 
 class PongGame {
 public:
@@ -94,27 +95,27 @@ public :void resetGame() {
 			//nah, one step at a time
 			bool hitAPaddle = false;
 			//first check ball change to see if it crossed a critical line. For one paddle that is only a change across 60 from above to below
-			cout << "		ballPosX = " << ballPosX << " ballVelX = " << ballVelX << '\n';
+			//cout << "		ballPosX = " << ballPosX << " ballVelX = " << ballVelX << '\n';
 			if(ballPosX >= 60 && (ballPosX + ballVelX) <= 60){
-				cout << "\n???checking collisions with paddle 0???\n";
+				//cout << "\n???checking collisions with paddle 0???\n";
 				//check collision with paddle 0
 				bool slopeIsApproxInfinite = abs(ballVelY) < 0.005;
-				cout << ballVelX << '/' << ballVelY << '\n';
+				//cout << ballVelX << '/' << ballVelY << '\n';
 				float m = ballVelX / ballVelY;
 				int estimatedPointOfCollision = !slopeIsApproxInfinite ? ballPosY + int((ballPosX - 60) * m) : ballPosY;
-				cout << "estimate point of collision at: " << estimatedPointOfCollision << '\n';
+				//cout << "estimate point of collision at: " << estimatedPointOfCollision << '\n';
 				if(abs(estimatedPointOfCollision - p0y) <= paddleWidth/2){
 					//a collision happened!
-					cout << "---A collision with paddle 0 has occured!---\n";
+					//cout << "---A collision with paddle 0 has occured!---\n";
 					hitAPaddle = true;
 					++p0score;
 					//assigning a new velocity based on where on the paddle the collision occurred
-					cout << "p0y = " << p0y << " paddleWidth/2.0 = " << paddleWidth / 2.0 << '\n';
+					//cout << "p0y = " << p0y << " paddleWidth/2.0 = " << paddleWidth / 2.0 << '\n';
 					double angleSelection = 210 + 120.0 / paddleWidth * (estimatedPointOfCollision - p0y + paddleWidth / 2.0);//angle between 210 and 330 depending on where hit paddle
-					cout << "angleSelection = " << angleSelection << '\n';
+					//cout << "angleSelection = " << angleSelection << '\n';
 					ballVelX = ballSpeed * -sin(angleSelection * 3.14159266 / 180.0);
 					ballVelY = ballSpeed * cos(angleSelection * 3.14159266 / 180.0);
-					cout << "ballVelX = " << ballVelX << " ballVelY = " << ballVelY << '\n';
+					//cout << "ballVelX = " << ballVelX << " ballVelY = " << ballVelY << '\n';
 					//assigning ball position to the point of collision
 					ballPosX = 60;
 					ballPosY = estimatedPointOfCollision;
@@ -162,6 +163,7 @@ public :void resetGame() {
 PongGame pong;
 /* called when a client connects */
 void openHandler(int clientID){
+	buffer = "01";
     ostringstream os;
 	//os << "Stranger " << clientID << " has joined.";
 	os << clientID;
@@ -177,6 +179,7 @@ void openHandler(int clientID){
 
 /* called when a client disconnects */
 void closeHandler(int clientID){
+	buffer = "05";
     ostringstream os;
     os << "Stranger " << clientID << " has left.";
 
@@ -189,7 +192,9 @@ void closeHandler(int clientID){
 
 /* called when a client sends a message to the server */
 void messageHandler(int clientID, string message){
-    ostringstream os;
+	buffer = message;
+	/*
+	ostringstream os;
 	pong.readInput(message);
 	pong.updateBallPositions();
     os << "Stranger " << clientID << " says: " << message;
@@ -200,34 +205,44 @@ void messageHandler(int clientID, string message){
             //server.wsSend(clientIDs[i], os.str());
     }
 	server.wsSend(clientID, pong.generateStateStr());
+	*/
 }
 
 /* called once per select() loop */
 void periodicHandler(){
-    static time_t next = time(NULL) + 10;
+    static time_t next = time(NULL) + .75;
 	static unsigned long long int kappa = 0;
-	//std::cout << kappa++;
+	//kappa++;
+	//std::cout << kappa++ << std::endl;
 
     time_t current = time(NULL);
-    if (current >= next){
-        ostringstream os;
+    if (current >= next && buffer!="05"){
+        //ostringstream os;
 		//Deprecated ctime API in Windows 10
-		char timecstring[26];
-		ctime_s(timecstring, sizeof(timecstring), &current);
-		string timestring(timecstring);
-        timestring = timestring.substr(0, timestring.size() - 1);
-        os << timestring;
+		//char timecstring[26];
+		//ctime_s(timecstring, sizeof(timecstring), &current);
+		//string timestring(timecstring);
+        //timestring = timestring.substr(0, timestring.size() - 1);
+        //os << timestring;
+		//ostringstream os;
+
+		pong.readInput(buffer);
+		pong.updateBallPositions();
 
         vector<int> clientIDs = server.getClientIDs();
-        for (int i = 0; i < clientIDs.size(); i++)
-            server.wsSend(clientIDs[i], os.str());
-
-        next = time(NULL) + 10;
+		for (int i = 0; i < clientIDs.size(); i++) 
+		{
+			server.wsSend(clientIDs[i], pong.generateStateStr());
+		}
+            //server.wsSend(clientIDs[i], os.str());
+		buffer = "01";
+		next = time(NULL) + .75;
     }
 }
 
 int main(int argc, char *argv[]){
     int port;
+	buffer = "05";
 
     cout << "Please set server port: ";
     cin >> port;
@@ -236,7 +251,7 @@ int main(int argc, char *argv[]){
     server.setOpenHandler(openHandler);
     server.setCloseHandler(closeHandler);
     server.setMessageHandler(messageHandler);
-    //server.setPeriodicHandler(periodicHandler);
+    server.setPeriodicHandler(periodicHandler);
 
     /* start the chatroom server, listen to ip '127.0.0.1' and port '8000' */
     server.startServer(port);

@@ -1,9 +1,10 @@
-﻿cl : Command line warning D9028: minimal rebuild failure, reverting to normal build
-  main.cpp
-c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\main.cpp(33): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\main.cpp(34): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\main.cpp(115): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\main.cpp(116): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\main.cpp(150): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
-c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\main.cpp(151): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
-  demo4-server.vcxproj -> C:\Users\Owner\Documents\GitHub\DamnPong\ICS167-OriginalChatServer\x64\Debug\demo4-server.exe
+﻿  main.cpp
+c:\users\christian\damnpong\ics167-originalchatserver\demo4-server\main.cpp(34): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\christian\damnpong\ics167-originalchatserver\demo4-server\main.cpp(35): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\christian\damnpong\ics167-originalchatserver\demo4-server\main.cpp(116): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\christian\damnpong\ics167-originalchatserver\demo4-server\main.cpp(117): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\christian\damnpong\ics167-originalchatserver\demo4-server\main.cpp(151): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+c:\users\christian\damnpong\ics167-originalchatserver\demo4-server\main.cpp(152): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+c:\users\christian\damnpong\ics167-originalchatserver\demo4-server\main.cpp(213): warning C4244: 'initializing': conversion from 'double' to 'time_t', possible loss of data
+c:\users\christian\damnpong\ics167-originalchatserver\demo4-server\main.cpp(239): warning C4244: '=': conversion from 'double' to 'time_t', possible loss of data
+  demo4-server.vcxproj -> C:\Users\Christian\DamnPong\ICS167-OriginalChatServer\x64\Debug\demo4-server.exe
