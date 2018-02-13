@@ -1,0 +1,27 @@
+﻿  websocket.cpp
+c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\websocket.cpp(90): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'LPVOID'
+c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\websocket.cpp(162): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\websocket.cpp(168): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\websocket.cpp(192): warning C4267: '=': conversion from 'size_t' to 'char', possible loss of data
+c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\websocket.cpp(201): warning C4267: '=': conversion from 'size_t' to 'char', possible loss of data
+c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\websocket.cpp(202): warning C4267: '=': conversion from 'size_t' to 'char', possible loss of data
+c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\websocket.cpp(215): warning C4267: '=': conversion from 'size_t' to 'char', possible loss of data
+c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\websocket.cpp(216): warning C4267: '=': conversion from 'size_t' to 'char', possible loss of data
+c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\websocket.cpp(217): warning C4267: '=': conversion from 'size_t' to 'char', possible loss of data
+c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\websocket.cpp(218): warning C4267: '=': conversion from 'size_t' to 'char', possible loss of data
+c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\websocket.cpp(223): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\websocket.cpp(274): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\websocket.cpp(287): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\websocket.cpp(300): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\websocket.cpp(439): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\websocket.cpp(592): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\websocket.cpp(594): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\websocket.cpp(695): warning C4244: '=': conversion from 'SOCKET' to 'int', possible loss of data
+c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\websocket.cpp(726): warning C4244: 'initializing': conversion from 'SOCKET' to 'int', possible loss of data
+c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\websocket.cpp(733): warning C4473: 'printf' : not enough arguments passed for format string
+  c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\websocket.cpp(733): note: placeholders and their parameters expect 2 variadic arguments, but 1 were provided
+  c:\users\owner\documents\github\damnpong\ics167-originalchatserver\demo4-server\websocket.cpp(733): note: the missing variadic argument 2 is required by format string '%d'
+  Generating Code...
+  Skipping... (no relevant changes detected)
+  main.cpp
+  demo4-server.vcxproj -> C:\Users\Owner\Documents\GitHub\DamnPong\ICS167-OriginalChatServer\x64\Debug\demo4-server.exe
