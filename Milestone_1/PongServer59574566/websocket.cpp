@@ -318,7 +318,7 @@ bool webSocket::wsCheckSizeClientFrame(int clientID){
 void webSocket::wsRemoveClient(int clientID){
     if (callOnClose != NULL)
         callOnClose(clientID);
-	hasConnectionAlready = false;
+	numConnections -= 1;
     wsClient *client = wsClients[clientID];
 
     // fetch close status (which could be false), and call wsOnClose
@@ -641,7 +641,7 @@ int webSocket::wsGetNextClientID(){
 }
 
 void webSocket::wsAddClient(int socket, in_addr ip){
-	hasConnectionAlready = true;
+	numConnections += 1;
     FD_SET(socket, &fds);
     if (socket > fdmax)
         fdmax = socket;
@@ -724,7 +724,7 @@ void webSocket::startServer(int port){
                     if (i == listenfd){
                         socklen_t addrlen = sizeof(cli_addr);
                         int newfd = accept(listenfd, (struct sockaddr*)&cli_addr, &addrlen);
-                        if (newfd != -1 && !hasConnectionAlready){
+                        if (newfd != -1 && numConnections < 4){
                             /* add new client */
                             wsAddClient(newfd, cli_addr.sin_addr);//gate with bool!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                             //Deprecated ntoa API

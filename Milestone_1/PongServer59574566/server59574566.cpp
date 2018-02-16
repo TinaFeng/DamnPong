@@ -12,11 +12,15 @@ string buffer;
 
 class PongGame {
 public:
-	int ballPosX, ballPosY, lvlWidth = 600, lvlHeight = 600, 
-		paddleWidth = 100, paddleHeight = 30, 
-		ballSpeed = 5, paddleSpeed = 10, 
-		paddleOffsetLimit = 250, 
-		p0x = 45, p0y = 300, spawnp0x = 45, spawnp0y = 300, p0score = 0;//p0x == paddle num 0 x position
+	int playerWhoLastHitBall = 0,
+		ballPosX = 300, ballPosY = 300, lvlWidth = 600, lvlHeight = 600,
+		paddleWidth = 100, paddleHeight = 30,
+		ballSpeed = 5, paddleSpeed = 10,
+		paddleOffsetLimit = 250,
+		p0x = 45, p0y = 300, spawnp0x = 45, spawnp0y = 300, p0score = 0,//p0x == paddle num 0 x position
+		p1x = 300, p1y = 555, spawnp1x = 300, spawnp1y = 555, p1score = 0,
+		p2x = 555, p2y = 300, spawnp2x = 555, spawnp2y = 300, p2score = 0,
+		p3x = 300, p3y = 45, spawnp3x = 300, spawnp3y = 45, p3score = 0;
 	//void resetGame();
 	//void readInput(string input);
 	//void movePaddle(int player, int inputSelection);
@@ -27,10 +31,10 @@ private:
 
 public :void resetGame() {
 	// place ball at center of play space and initialize its velocity
-		p0score = 0;
+		//p0score = 0;
 		ballPosX = 300;
 		ballPosY = 300;
-		double angleSelection = 3.14159266/2.0;//Random between [0 and 2 pi)
+		double angleSelection = 3.14159266/2.0;//Random between [0 and 2 pi) to do later I guess
 		ballVelX = ballSpeed * -sin(angleSelection);
 		ballVelY = ballSpeed * cos(angleSelection);
 	}
@@ -53,41 +57,97 @@ public :void resetGame() {
 					//??????????
 				}
 			}
+			else if (input[0] == '1') {
+				//move left input
+				if (input[1] == '0') {
+					movePaddle(1, 0);
+				}
+				//not moving
+				else if (input[1] == '1') {
+					movePaddle(1, 1);
+				}
+				//moving right
+				else if (input[1] == '2') {
+					movePaddle(1, 2);
+				}
+			}
+			else if (input[0] == '2') {
+				//move left input
+				if (input[1] == '0') {
+					movePaddle(2, 0);
+				}
+				//not moving
+				else if (input[1] == '1') {
+					movePaddle(2, 1);
+				}
+				//moving right
+				else if (input[1] == '2') {
+					movePaddle(2, 2);
+				}
+			}
+			else if (input[0] == '3') {
+				//move left input
+				if (input[1] == '0') {
+					movePaddle(3, 0);
+				}
+				//not moving
+				else if (input[1] == '1') {
+					movePaddle(3, 1);
+				}
+				//moving right
+				else if (input[1] == '2') {
+					movePaddle(3, 2);
+				}
+			}
 		}
 		void movePaddle(int player, int inputSelection) {
 			if (player % 2 == 0) {
-				//horizontal movement
-				if (player < 2) {
-					//movement flipped
+				if (player == 0) {
+					//horizontal movement
 					if (inputSelection == 0) {
 						//move right
 						p0y = (abs(p0y + paddleSpeed - spawnp0y) >= paddleOffsetLimit) ? spawnp0y + paddleOffsetLimit : p0y + paddleSpeed;
-						//cout << "moving left.";
 					}
 					else if (inputSelection == 2) {
 						//move left
 						p0y = (abs(p0y - paddleSpeed - spawnp0y) >= paddleOffsetLimit) ? spawnp0y - paddleOffsetLimit : p0y - paddleSpeed;
-						//cout << "moving right.";
 					}
 				}
 				else {
-					//movement normal
+					//player is 2
+					//horizontal movement
 					if (inputSelection == 0) {
-						//move left
+						//move right
+						p2y = (abs(p2y + paddleSpeed - spawnp2y) >= paddleOffsetLimit) ? spawnp2y + paddleOffsetLimit : p2y + paddleSpeed;
 					}
 					else if (inputSelection == 2) {
-						//move right
+						//move left
+						p2y = (abs(p2y - paddleSpeed - spawnp2y) >= paddleOffsetLimit) ? spawnp2y - paddleOffsetLimit : p2y - paddleSpeed;
 					}
 				}
 			}
 			else {
-				//TODO: this /shrug
 				//vertical movement
-				if (player < 2) {
-					//movement flipped
+				if (player == 1) {
+					if (inputSelection == 0) {
+						//move left
+						p1x = (abs(p1x - paddleSpeed - spawnp1x) >= paddleOffsetLimit) ? spawnp1x - paddleOffsetLimit : p1x - paddleSpeed;
+					}
+					else if (inputSelection == 2) {
+						//move right
+						p1x = (abs(p1x + paddleSpeed - spawnp1x) >= paddleOffsetLimit) ? spawnp1x + paddleOffsetLimit : p1x + paddleSpeed;
+					}
 				}
 				else {
-
+					//player 3
+					if (inputSelection == 0) {
+						//move left
+						p3x = (abs(p3x - paddleSpeed - spawnp3x) >= paddleOffsetLimit) ? spawnp3x - paddleOffsetLimit : p3x - paddleSpeed;
+					}
+					else if (inputSelection == 2) {
+						//move right
+						p0x = (abs(p3x + paddleSpeed - spawnp3x) >= paddleOffsetLimit) ? spawnp3x + paddleOffsetLimit : p3x + paddleSpeed;
+					}
 				}
 			}
 		}
@@ -154,7 +214,11 @@ public :void resetGame() {
 		}
 		string generateStateStr() {
 			ostringstream toReturn;
-			toReturn << ballPosY << ',' << ballPosX << ';' << p0x << ',' << p0y << ',' << p0score;
+			toReturn << ballPosY << ',' << ballPosX 
+				<< ';' << p0x << ',' << p0y << ',' << p0score
+				<< ';' << p1x << ',' << p1y << ',' << p1score
+				<< ';' << p2x << ',' << p2y << ',' << p2score
+				<< ';' << p3x << ',' << p3y << ',' << p3score;
 			return toReturn.str();
 		}
 
@@ -234,6 +298,7 @@ void periodicHandler(){
         vector<int> clientIDs = server.getClientIDs();
 		for (int i = 0; i < clientIDs.size(); i++) 
 		{
+			cout << pong.generateStateStr() << endl;
 			server.wsSend(clientIDs[i], pong.generateStateStr());
 		}
             //server.wsSend(clientIDs[i], os.str());

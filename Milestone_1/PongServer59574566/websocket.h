@@ -104,7 +104,7 @@ private:
     fd_set fds;
     int fdmax;
     int listenfd;
-	bool hasConnectionAlready = false;
+	int numConnections = 0;
 
     void wsCheckIdleClients();
     bool wsSendClientMessage(int clientID, unsigned char opcode, string message);
