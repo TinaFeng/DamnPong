@@ -134,6 +134,7 @@
                             else if (payload.toString() == "3") {
                                 Player_Index = 4;
                             }
+                            Player_Index = 4;
                             Connected = true;
                         }
                         else {
@@ -161,12 +162,15 @@
             var speed = 10;
             //moving keys (only top)
             var LeftArrow = 37, RightArrow = 39;
+            var UpArrow = 38, DownArrow = 40;
             
             var score = 0;//score
             var Player_Index; // which player/color is the client, will be used to determine which section of server location is it
             var Server_Location; // all the location data the server is hosting. It is a string consist of xy locations of each object(separated by ;) 
             var Player_Location;// location that the player is drawing 
             var Ball_Location;//location of ball
+
+            var init_pos = "300,295;45,300,0;300,555,0;555,300,0;300,45,0";
             player_T = {
                 x: null,
                 y: null,
@@ -194,41 +198,69 @@
                     }
                     
                     
-  
-              
-                    if (keystate[LeftArrow]) {
         
-                  
-                        send((Player_Index - 1).toString() + "2");
-                    }
-                    else if (keystate[RightArrow]) {
-                
-                        send((Player_Index - 1).toString() + "0");
-                    }
+                    if (Player_Index == 1 || Player_Index == 3) {
 
-           
+                        if (keystate[LeftArrow]) {
+
+
+                            send((Player_Index - 1).toString() + "2");
+                        }
+                        else if (keystate[RightArrow]) {
+
+                            send((Player_Index - 1).toString() + "0");
+                        }
+                    }
+                    else if (Player_Index ==2 || Player_Index ==4)
+                    {
+                        if (keystate[UpArrow]) {
+                        //    log((Player_Index - 1).toString() + "0");
+                            send((Player_Index - 1).toString() + "0");
+                        }
+                        else if (keystate[DownArrow]) {
+                          //  log((Player_Index - 1).toString() + "2");
+                            send((Player_Index - 1).toString() + "2");
+                        }
+                    }
                     //index will change depends on which side the paddle is
                 },
                 draw: function () {  //300,300;45,290
               
-                    if (Player_Index == 1) {
-                        context.fillStyle = 'red';
-                    }
-                    else if (Player_Index === 2) {
-                        context.fillStyle = 'blue';
-                    }
-                    else if (Player_Index === 3) {
-                        context.fillStyle = 'green';
-                    }
-                    else if (Player_Index === 4) {
-                        context.fillStyle = 'yellow';
-                    }
-                    if (Server_Location != null) {
-                        context.fillRect(Player_Location[1]-50, Player_Location[0], this.width, this.height);
+       
+                    if (Server_Location == null) 
+                        Server_Location = init_pos.split(";");
+                    //45 300, 300 555, 555 300 
+                    //45 300, 300 555, 555 300
+                                    
 
-                    }
+                    //  log(Server_Location);
+                    //red-top green-bottom yellow-left blue-right
+                        for (i = 0; i < 4; i++ )
+                        {
+                            Player_Location = Server_Location[i+1].split(",");
+                            if (i == 0) {
+                                context.fillStyle = 'red';
+                                context.fillRect(Player_Location[1]-(this.width/2), Player_Location[0]-(this.height/2), this.width, this.height);
+                            }
+                            else if (i == 1) {
+                                context.fillStyle = 'blue';
+                                context.fillRect(Player_Location[1] - (this.height / 2), Player_Location[0] - (this.width / 2), this.height, this.width);
+                            }
+                            else if (i == 2) {
+                                context.fillStyle = 'green';
+                                context.fillRect(Player_Location[1] - (this.width / 2), Player_Location[0] - (this.height / 2), this.width, this.height);
+                            }
+                            else if (i == 3)
+                                {
+                                context.fillStyle = 'yellow';
+                                context.fillRect(Player_Location[1] - (this.height / 2), Player_Location[0] - (this.width / 2), this.height, this.width);
+                           }
+               
+                        }
+                    
                 }
-            };
+                };
+            
           
             ball = {
                 x: null,
@@ -332,7 +364,7 @@
 
 
                 draw: function () {
-                    context.fillRect(this.x, this.y, this.radius, this.radius);
+                    context.fillRect(this.x-(this.radius/2), this.y-(this.radius/2), this.radius, this.radius);
                 }
 
             };
@@ -377,13 +409,34 @@
 
             function init() { //on start
               
-                if (Player_Index == 1)
+                if (Player_Index == 1) //top player 
                 {
                     player_T.x =45;
                     player_T.y = 300;
 
                 }
+                else if (Player_Index == 2)
+                {
 
+                    player_T.x = 300;
+                    player_T.y = 555;
+
+                }
+                else if (Player_Index == 3)
+                {
+
+                    player_T.x = 555;
+                    player_T.y = 300;
+                }
+                else if (Player_Index ==4)
+                {
+                    player_T.x = 300;
+                    player_T.y = 45;
+                }
+ 
+
+
+                
 
                 ball.x = 300;
                 ball.y = 300;
