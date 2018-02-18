@@ -724,6 +724,7 @@ void webSocket::startServer(int port){
                     if (i == listenfd){
                         socklen_t addrlen = sizeof(cli_addr);
                         int newfd = accept(listenfd, (struct sockaddr*)&cli_addr, &addrlen);
+						cout << "Trying to add new client. Already have " << numConnections << " active connections.\n";
                         if (newfd != -1 && numConnections < 4){
                             /* add new client */
                             wsAddClient(newfd, cli_addr.sin_addr);//gate with bool!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -751,7 +752,7 @@ void webSocket::startServer(int port){
         }
 
         if (time(NULL) >= nextPingTime){
-            wsCheckIdleClients();
+            //wsCheckIdleClients();
             nextPingTime = time(NULL) + 1;
         }
 
