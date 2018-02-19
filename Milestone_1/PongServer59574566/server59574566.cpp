@@ -252,10 +252,11 @@ public :void resetGame() {
 PongGame pong;
 /* called when a client connects */
 void openHandler(int clientID){
-	buffer = "01";
+	
 	vector<int> clientIDs = server.getClientIDs();
 	cout << "new size of accepted client list: " << clientIDs.size() << "\n";
 	if (clientIDs.size() == 4) {
+		buffer = "01";
 		pong.resetGame();
 		for (int i = 0; i < clientIDs.size(); i++) {
 			ostringstream temp;
