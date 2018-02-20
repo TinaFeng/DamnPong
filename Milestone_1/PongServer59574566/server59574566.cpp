@@ -294,7 +294,6 @@ void closeHandler(int clientID){
 /* called when a client sends a message to the server */
 void messageHandler(int clientID, string message){
 	buffer = message;
-	cout << buffer << endl;
 	/*
 	ostringstream os;
 	pong.readInput(message);
@@ -312,10 +311,10 @@ void messageHandler(int clientID, string message){
 
 /* called once per select() loop */
 void periodicHandler(){
-    static time_t next = time(NULL) + .75;
+    //static time_t next = time(NULL) + 1;
 
-    time_t current = time(NULL);
-    if (current >= next && buffer!="05"){
+    //time_t current = time(NULL);
+    if (buffer!="05"){
         //ostringstream os;
 		//Deprecated ctime API in Windows 10
 		//char timecstring[26];
@@ -336,7 +335,7 @@ void periodicHandler(){
 		}
             //server.wsSend(clientIDs[i], os.str());
 		buffer = "01";
-		next = time(NULL) + .75;
+		//next = time(NULL) + .75;
     }
 }
 

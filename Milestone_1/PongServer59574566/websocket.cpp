@@ -714,7 +714,9 @@ void webSocket::startServer(int port){
 
     struct timeval timeout;
     time_t nextPingTime = time(NULL) + 1;
+	int kappa = 0;
     while (FD_ISSET(listenfd, &fds)){
+		kappa++;
         read_fds = fds;
         timeout.tv_sec = 0;
         timeout.tv_usec = 10000;
@@ -756,8 +758,10 @@ void webSocket::startServer(int port){
             nextPingTime = time(NULL) + 1;
         }
 
-        if (callPeriodic != NULL)
-            callPeriodic();
+		if (kappa > 2) {
+			kappa = 0;
+			callPeriodic();
+		}
     }
 }
 

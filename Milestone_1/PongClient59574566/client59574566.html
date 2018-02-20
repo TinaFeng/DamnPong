@@ -142,6 +142,8 @@
                             //if the server didn't send player location, it should be the states of the game, server_Location will split the states into
                             //individual object(ball, then player1, future players etc split by ";")
                             Server_Location = payload.split(";");
+                            player_T.update();
+                            ball.update();
                         }
                     });
 
@@ -447,9 +449,9 @@
 
             function update() {
    
-                player_T.update();
+                // player_T.update();
   
-                ball.update();
+                // ball.update();
      
             }
             function draw() {
