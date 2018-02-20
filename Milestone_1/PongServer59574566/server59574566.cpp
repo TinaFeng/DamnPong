@@ -12,7 +12,7 @@ string buffer;
 
 class PongGame {
 public:
-	int playerWhoLastHitBall = 0,
+	int playerWhoLastHitBall = 4,
 		ballPosX = 300, ballPosY = 300, lvlWidth = 600, lvlHeight = 600,
 		paddleWidth = 100, paddleHeight = 30,
 		ballSpeed = 5, paddleSpeed = 10,
@@ -32,6 +32,26 @@ private:
 public :void resetGame() {
 	// place ball at center of play space and initialize its velocity
 		//p0score = 0;
+	if (playerWhoLastHitBall != 4) {
+		switch (playerWhoLastHitBall)
+		{
+		case 0:
+			++p0score;
+			break;
+		case 1:
+			++p1score;
+			break;
+		case 2:
+			++p2score;
+			break;
+		case 3:
+			++p3score;
+			break;
+		default:
+			break;
+		}
+		playerWhoLastHitBall = 4;
+	}
 		ballPosX = 300;
 		ballPosY = 300;
 		double angleSelection = 3.14159266/2.0;//Random between [0 and 2 pi) to do later I guess
@@ -152,89 +172,70 @@ public :void resetGame() {
 			}
 		}
 		void updateBallPositions() {
-			//nah, one step at a time
 			bool hitAPaddle = false;
-			//first check ball change to see if it crossed a critical line. For one paddle that is only a change across 60 from above to below
-			//cout << "		ballPosX = " << ballPosX << " ballVelX = " << ballVelX << '\n';
 			if (ballPosX >= 60 && (ballPosX + ballVelX) <= 60) {
-				//cout << "\n???checking collisions with paddle 0???\n";
-				//check collision with paddle 0
 				bool slopeIsApproxInfinite = abs(ballVelY) < 0.005;
-				//cout << ballVelX << '/' << ballVelY << '\n';
 				float m = ballVelX / ballVelY;
 				int estimatedPointOfCollision = !slopeIsApproxInfinite ? ballPosY + int((ballPosX - 60) * m) : ballPosY;
-				//cout << "estimate point of collision at: " << estimatedPointOfCollision << '\n';
 				if (abs(estimatedPointOfCollision - p0y) <= paddleWidth / 2) {
-					//a collision happened!
-					//cout << "---A collision with paddle 0 has occured!---\n";
 					hitAPaddle = true;
-					++p0score;
-					//assigning a new velocity based on where on the paddle the collision occurred
-					//cout << "p0y = " << p0y << " paddleWidth/2.0 = " << paddleWidth / 2.0 << '\n';
-					double angleSelection = 210 + 120.0 / paddleWidth * (estimatedPointOfCollision - p0y + paddleWidth / 2.0);//angle between 210 and 330 depending on where hit paddle
-																															  //cout << "angleSelection = " << angleSelection << '\n';
+					playerWhoLastHitBall = 0;
+					double angleSelection = 210 + 120.0 / paddleWidth * (estimatedPointOfCollision - p0y + paddleWidth / 2.0);
 					ballVelX = ballSpeed * -sin(angleSelection * 3.14159266 / 180.0);
 					ballVelY = ballSpeed * cos(angleSelection * 3.14159266 / 180.0);
-					//cout << "ballVelX = " << ballVelX << " ballVelY = " << ballVelY << '\n';
-					//assigning ball position to the point of collision
 					ballPosX = 60;
 					ballPosY = estimatedPointOfCollision;
-					//but now we need to calculate next ball position
-					//might as well let it be at the estimate point of collision instead of any fancier prediction
 				}
 			}else if (ballPosX <= 540 && (ballPosX + ballVelX) >= 540) {
-				//cout << "\n???checking collisions with paddle 2???\n";
-				//check collision with paddle 2
 				bool slopeIsApproxInfinite = abs(ballVelY) < 0.005;
-				//cout << ballVelX << '/' << ballVelY << '\n';
 				float m = ballVelX / ballVelY;
 				int estimatedPointOfCollision = !slopeIsApproxInfinite ? ballPosY + int((ballPosX - 540) * m) : ballPosY;
-				//cout << "estimate point of collision at: " << estimatedPointOfCollision << '\n';
-				if (abs(estimatedPointOfCollision - p0y) <= paddleWidth / 2) {
-					//a collision happened!
-					//cout << "---A collision with paddle 0 has occured!---\n";
+				if (abs(estimatedPointOfCollision - p2y) <= paddleWidth / 2) {
 					hitAPaddle = true;
-					++p2score;
-					//assigning a new velocity based on where on the paddle the collision occurred
-					//cout << "p0y = " << p0y << " paddleWidth/2.0 = " << paddleWidth / 2.0 << '\n';
-					double angleSelection = 30 + 120.0 / paddleWidth * (estimatedPointOfCollision - p0y + paddleWidth / 2.0);//angle between 30 and 150 depending on where hit paddle
-																															  //cout << "angleSelection = " << angleSelection << '\n';
+					playerWhoLastHitBall = 2;
+					double angleSelection = 150 - 120.0 / paddleWidth * (estimatedPointOfCollision - p2y + paddleWidth / 2.0);
 					ballVelX = ballSpeed * -sin(angleSelection * 3.14159266 / 180.0);
 					ballVelY = ballSpeed * cos(angleSelection * 3.14159266 / 180.0);
-					//cout << "ballVelX = " << ballVelX << " ballVelY = " << ballVelY << '\n';
-					//assigning ball position to the point of collision
 					ballPosX = 540;
 					ballPosY = estimatedPointOfCollision;
-					//but now we need to calculate next ball position
-					//might as well let it be at the estimate point of collision instead of any fancier prediction
 				}
 			}
-			
-			if(!hitAPaddle){
-				// temporary code to reflect ball back if it hits a wall
-				//p1 facing wall
-				if (ballPosY >= 600) {
-					ballVelY *= -1;
+			else if (ballPosY >= 60 && (ballPosY + ballVelY) <= 60) {
+				bool slopeIsApproxZero = abs(ballVelX) < 0.005;
+				float m = ballVelY / ballVelX;
+				int estimatedPointOfCollision = !slopeIsApproxZero ? ballPosX + int((ballPosY - 60) * m) : ballPosX;
+				if (abs(estimatedPointOfCollision - p3x) <= paddleWidth / 2) {
+					hitAPaddle = true;
+					playerWhoLastHitBall = 3;
+					double angleSelection = 60 - 120.0 / paddleWidth * (estimatedPointOfCollision - p3x + paddleWidth / 2.0);
+					ballVelX = ballSpeed * -sin(angleSelection * 3.14159266 / 180.0);
+					ballVelY = ballSpeed * cos(angleSelection * 3.14159266 / 180.0);
+					ballPosX = estimatedPointOfCollision;
+					ballPosY = 60;
 				}
-				//hitAWall = true;
-				//p2 facing wall
-				if (ballPosX >= 600) {
-					ballVelX *= -1;
-				}
-				//p3 facing wall
-				if (ballPosY <= 0) {
-					ballVelY *= -1;
-				}
-
-				//reset game if ya done goofed
-				if (ballPosX <= 0) {
-					resetGame();
+			}
+			else if (ballPosY <= 540 && (ballPosY + ballVelY) >= 540) {
+				bool slopeIsApproxZero = abs(ballVelX) < 0.005;
+				float m = ballVelY / ballVelX;
+				int estimatedPointOfCollision = !slopeIsApproxZero ? ballPosX + int((ballPosY - 540) * m) : ballPosX;
+				if (abs(estimatedPointOfCollision - p1x) <= paddleWidth / 2) {
+					hitAPaddle = true;
+					playerWhoLastHitBall = 1;
+					double angleSelection = 120 + 120.0 / paddleWidth * (estimatedPointOfCollision - p1x + paddleWidth / 2.0);
+					ballVelX = ballSpeed * -sin(angleSelection * 3.14159266 / 180.0);
+					ballVelY = ballSpeed * cos(angleSelection * 3.14159266 / 180.0);
+					ballPosX = estimatedPointOfCollision;
+					ballPosY = 540;
 				}
 			}
 
 			if(!hitAPaddle){
 				ballPosX += ballVelX;
 				ballPosY += ballVelY;
+				//reset game if ya done goofed
+				if (ballPosX <= 0 || ballPosX >= 600 || ballPosY <= 0 || ballPosY >= 600) {
+					resetGame();
+				}
 			}
 		}
 		string generateStateStr() {
@@ -256,12 +257,17 @@ void openHandler(int clientID){
 	vector<int> clientIDs = server.getClientIDs();
 	cout << "new size of accepted client list: " << clientIDs.size() << "\n";
 	if (clientIDs.size() == 4) {
+		cout << "\nstarting game!\n";
 		buffer = "01";
 		pong.resetGame();
+		cout << "assigning player nums.\n";
 		for (int i = 0; i < clientIDs.size(); i++) {
 			ostringstream temp;
 			temp << i;
 			server.wsSend(clientIDs[i], temp.str());
+		}
+		cout << "sending stateStrings to all clients.\n\n";
+		for (int i = 0; i < clientIDs.size(); i++) {
 			server.wsSend(clientIDs[i], pong.generateStateStr());
 		}
 		
@@ -288,6 +294,7 @@ void closeHandler(int clientID){
 /* called when a client sends a message to the server */
 void messageHandler(int clientID, string message){
 	buffer = message;
+	cout << buffer << endl;
 	/*
 	ostringstream os;
 	pong.readInput(message);
@@ -306,9 +313,6 @@ void messageHandler(int clientID, string message){
 /* called once per select() loop */
 void periodicHandler(){
     static time_t next = time(NULL) + .75;
-	static unsigned long long int kappa = 0;
-	//kappa++;
-	//std::cout << kappa++ << std::endl;
 
     time_t current = time(NULL);
     if (current >= next && buffer!="05"){
@@ -327,7 +331,7 @@ void periodicHandler(){
         vector<int> clientIDs = server.getClientIDs();
 		for (int i = 0; i < clientIDs.size(); i++) 
 		{
-			//cout << pong.generateStateStr() << endl;
+			//cout << "message out to: p" << i << " saying " << pong.generateStateStr() << "\n";
 			server.wsSend(clientIDs[i], pong.generateStateStr());
 		}
             //server.wsSend(clientIDs[i], os.str());
