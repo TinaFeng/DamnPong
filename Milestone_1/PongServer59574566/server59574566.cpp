@@ -35,26 +35,7 @@ private:
 public :void resetGame() {
 	// place ball at center of play space and initialize its velocity
 		//p0score = 0;
-	if (playerWhoLastHitBall != 4) {
-		switch (playerWhoLastHitBall)
-		{
-		case 0:
-			++p0score;
-			break;
-		case 1:
-			++p1score;
-			break;
-		case 2:
-			++p2score;
-			break;
-		case 3:
-			++p3score;
-			break;
-		default:
-			break;
-		}
-		playerWhoLastHitBall = 4;
-	}
+	
 		ballPosX = 300;
 		ballPosY = 300;
 		double angleSelection = 3.14159266/2.0;//Random between [0 and 2 pi) to do later I guess
@@ -237,6 +218,26 @@ public :void resetGame() {
 				ballPosY += ballVelY;
 				//reset game if ya done goofed
 				if (ballPosX <= 0 || ballPosX >= 600 || ballPosY <= 0 || ballPosY >= 600) {
+					if (playerWhoLastHitBall != 4 && p0score < 10 && p1score < 10 && p2score < 10 && p3score < 10) {
+						switch (playerWhoLastHitBall)
+						{
+						case 0:
+							++p0score;
+							break;
+						case 1:
+							++p1score;
+							break;
+						case 2:
+							++p2score;
+							break;
+						case 3:
+							++p3score;
+							break;
+						default:
+							break;
+						}
+						playerWhoLastHitBall = 4;
+					}
 					resetGame();
 				}
 			}

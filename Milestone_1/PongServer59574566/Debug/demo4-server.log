@@ -1,19 +1,47 @@
-﻿  server59574566.cpp
-c:\users\xuanf\onedrive\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(61): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-c:\users\xuanf\onedrive\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(62): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-c:\users\xuanf\onedrive\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(187): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-c:\users\xuanf\onedrive\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(188): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-c:\users\xuanf\onedrive\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(200): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-c:\users\xuanf\onedrive\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(201): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-c:\users\xuanf\onedrive\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(214): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-c:\users\xuanf\onedrive\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(215): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-c:\users\xuanf\onedrive\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(228): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-c:\users\xuanf\onedrive\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(229): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-c:\users\xuanf\onedrive\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(236): warning C4244: “+=”: 从“float”转换到“int”，可能丢失数据
-c:\users\xuanf\onedrive\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(237): warning C4244: “+=”: 从“float”转换到“int”，可能丢失数据
-c:\users\xuanf\onedrive\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(271): warning C4018: “<”: 有符号/无符号不匹配
-c:\users\xuanf\onedrive\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(294): warning C4018: “<”: 有符号/无符号不匹配
-c:\users\xuanf\onedrive\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(355): warning C4018: “<”: 有符号/无符号不匹配
-c:\users\xuanf\onedrive\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(383): warning C4018: “<”: 有符号/无符号不匹配
-c:\users\xuanf\onedrive\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(419): warning C4018: “<”: 有符号/无符号不匹配
-  demo4-server.vcxproj -> C:\Users\xuanf\OneDrive\Documents\GitHub\DamnPong\Milestone_1\PongServer59574566\Debug\demo4-server.exe
+﻿  websocket.cpp
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\websocket.cpp(90): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'LPVOID'
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\websocket.cpp(116): warning C4018: '<': signed/unsigned mismatch
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\websocket.cpp(133): warning C4018: '<': signed/unsigned mismatch
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\websocket.cpp(155): warning C4018: '>=': signed/unsigned mismatch
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\websocket.cpp(168): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\websocket.cpp(192): warning C4267: '=': conversion from 'size_t' to 'char', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\websocket.cpp(201): warning C4267: '=': conversion from 'size_t' to 'char', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\websocket.cpp(202): warning C4267: '=': conversion from 'size_t' to 'char', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\websocket.cpp(216): warning C4267: '=': conversion from 'size_t' to 'char', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\websocket.cpp(217): warning C4267: '=': conversion from 'size_t' to 'char', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\websocket.cpp(218): warning C4267: '=': conversion from 'size_t' to 'char', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\websocket.cpp(410): warning C4018: '<': signed/unsigned mismatch
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\websocket.cpp(609): warning C4018: '>=': signed/unsigned mismatch
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\websocket.cpp(636): warning C4018: '<': signed/unsigned mismatch
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\websocket.cpp(651): warning C4018: '>=': signed/unsigned mismatch
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\websocket.cpp(736): warning C4473: 'printf' : not enough arguments passed for format string
+  c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\websocket.cpp(736): note: placeholders and their parameters expect 2 variadic arguments, but 1 were provided
+  c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\websocket.cpp(736): note: the missing variadic argument 2 is required by format string '%d'
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\websocket.cpp(769): warning C4018: '<': signed/unsigned mismatch
+  sha1.cpp
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\sha1.cpp(226): warning C4267: '+=': conversion from 'size_t' to 'unsigned char', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\sha1.cpp(233): warning C4267: '+=': conversion from 'size_t' to 'unsigned char', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\sha1.cpp(264): warning C4267: '+=': conversion from 'size_t' to 'unsigned char', possible loss of data
+  server59574566.cpp
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(42): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(43): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(168): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(169): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(181): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(182): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(195): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(196): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(209): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(210): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(217): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(218): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(272): warning C4018: '<': signed/unsigned mismatch
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(295): warning C4018: '<': signed/unsigned mismatch
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(356): warning C4018: '<': signed/unsigned mismatch
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(384): warning C4018: '<': signed/unsigned mismatch
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(420): warning C4018: '<': signed/unsigned mismatch
+  base64.cpp
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\base64.cpp(96): warning C4267: '=': conversion from 'size_t' to 'unsigned char', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\base64.cpp(113): warning C4267: '=': conversion from 'size_t' to 'unsigned char', possible loss of data
+  Generating Code...
+  demo4-server.vcxproj -> C:\Users\Owner\Documents\GitHub\DamnPong\Milestone_1\PongServer59574566\Debug\demo4-server.exe
