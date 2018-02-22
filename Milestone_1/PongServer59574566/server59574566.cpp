@@ -23,7 +23,7 @@ public:
 		p3x = 300, p3y = 45, spawnp3x = 300, spawnp3y = 45, p3score = 0;
 
 	std::map<int, std::string> usernames;
-	
+	bool name_assigned = false;
 	//void resetGame();
 	//void readInput(string input);
 	//void movePaddle(int player, int inputSelection);
@@ -348,9 +348,61 @@ void messageHandler(int clientID, string message){
 /* called once per select() loop */
 void periodicHandler(){
     //static time_t next = time(NULL) + 1;
+	vector<int> clientIDs = server.getClientIDs();
+	if (clientIDs.size() == 4)
+	{
+		
+		for (int i = 0; i < clientIDs.size(); i++)
+		{
+			ostringstream list;
+			list << "N;";
+			cout << "Client ID: " << i << "name: " << pong.usernames[i] << endl;
+			for (int k = 0; k != pong.usernames.size(); k++)
+			{
+				if (k != i)
+				{
 
+					list << pong.usernames[k];
+					list << ";";
+
+				}
+
+
+			}
+			server.wsSend(clientIDs[i], list.str());
+
+		}
+		pong.name_assigned = true;
+	}
     //time_t current = time(NULL);
     if (buffer!="05"){
+
+		if (!pong.name_assigned)
+		{
+			vector<int> clientIDs = server.getClientIDs();
+			for (int i = 0; i < clientIDs.size(); i++)
+			{
+				ostringstream list;
+				list << "N;";
+
+				cout << "Client ID: " << i << "name: " << pong.usernames[i] << endl;
+				for (int k = 0; k != pong.usernames.size(); k++)
+				{
+					if (k != i)
+					{
+
+						list << pong.usernames[k];
+						list << ";";
+
+					}
+
+
+				}
+				server.wsSend(clientIDs[i], list.str());
+
+			}
+			pong.name_assigned = true;
+		}
         //ostringstream os;
 		//Deprecated ctime API in Windows 10
 		//char timecstring[26];
