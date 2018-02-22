@@ -287,7 +287,7 @@ void openHandler(int clientID){
 					
 					
 			}
-			server.wsSend(clientIDs[i], list.str());
+			//server.wsSend(clientIDs[i], list.str());
 			server.wsSend(clientIDs[i], temp.str());
 			
 		}
@@ -364,13 +364,11 @@ void periodicHandler(){
 				cout << "Client ID: " << i << "name: " << pong.usernames[i] << endl;
 				for (int k = 0; k != pong.usernames.size(); k++)
 				{
-					if (k != i)
-					{
 
 						list << pong.usernames[k];
 						list << ";";
 
-					}
+					
 
 
 				}

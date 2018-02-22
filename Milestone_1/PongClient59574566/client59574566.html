@@ -200,10 +200,10 @@
                             log(payload);
                             var names = payload.split(";");
 
-                
-                            document.getElementById("Player1").innerText = names[1];
-                            document.getElementById("Player2").innerText = names[2];
-                            document.getElementById("Player3").innerText = names[3];
+                            document.getElementById("Player").innerText = names[1];
+                            document.getElementById("Player1").innerText = names[2];
+                            document.getElementById("Player2").innerText = names[3];
+                            document.getElementById("Player3").innerText = names[4];
 
                         }
                         else {
@@ -236,6 +236,9 @@
             var UpArrow = 38, DownArrow = 40;
 
             var score = 0;//score
+            var score1 = 0;//score
+            var score2 = 0;//score
+            var score3 = 0;//score
             var Player_Index; // which player/color is the client, will be used to determine which section of server location is it
             var Server_Location; // all the location data the server is hosting. It is a string consist of xy locations of each object(separated by ;)
             var Player_Location;// location that the player is drawing
@@ -260,11 +263,7 @@
                         this.x = ~~Player_Location[1];  // YEAH INTEGER RIGHT
                         this.y = ~~Player_Location[0];
 
-                        if (this.score != ~~Player_Location[2])
-                        {
-                            this.score = ~~Player_Location[2];
-                            document.getElementById('Score').innerHTML = "Score: " + this.score;
-                        }
+                        
 
                     }
 
@@ -312,19 +311,41 @@
                             if (i == 0) {
                                 context.fillStyle = 'red';
                                 context.fillRect(Player_Location[1]-(this.width/2), Player_Location[0]-(this.height/2), this.width, this.height);
+                                
+                                if (this.score != ~~Player_Location[2])
+                                {
+                                    this.score = ~~Player_Location[2];
+                                    document.getElementById('Score').innerHTML = "Score: " + this.score;
+                                }
                             }
                             else if (i == 1) {
                                 context.fillStyle = 'blue';
                                 context.fillRect(Player_Location[1] - (this.height / 2), Player_Location[0] - (this.width / 2), this.height, this.width);
+                                if (this.score1 != ~~Player_Location[2])
+                                {
+                                    this.score1 = ~~Player_Location[2];
+                                    document.getElementById('Score1').innerHTML = "Score: " + this.score1;
+                                }
                             }
                             else if (i == 2) {
                                 context.fillStyle = 'green';
                                 context.fillRect(Player_Location[1] - (this.width / 2), Player_Location[0] - (this.height / 2), this.width, this.height);
+
+                                if (this.score2 != ~~Player_Location[2])
+                                {
+                                    this.score2 = ~~Player_Location[2];
+                                    document.getElementById('Score2').innerHTML = "Score: " + this.score2;
+                                }
                             }
                             else if (i == 3)
                                 {
                                 context.fillStyle = 'yellow';
                                 context.fillRect(Player_Location[1] - (this.height / 2), Player_Location[0] - (this.width / 2), this.height, this.width);
+                                if (this.score3 != ~~Player_Location[2])
+                                {
+                                    this.score3 = ~~Player_Location[2];
+                                    document.getElementById('Score3').innerHTML = "Score: " + this.score3;
+                                }
                            }
 
                         }
