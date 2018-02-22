@@ -4,7 +4,7 @@
 #include <sstream>
 #include <time.h>
 #include "websocket.h"
-
+#include <map>
 using namespace std;
 
 webSocket server;
@@ -21,6 +21,9 @@ public:
 		p1x = 300, p1y = 555, spawnp1x = 300, spawnp1y = 555, p1score = 0,
 		p2x = 555, p2y = 300, spawnp2x = 555, spawnp2y = 300, p2score = 0,
 		p3x = 300, p3y = 45, spawnp3x = 300, spawnp3y = 45, p3score = 0;
+
+	std::map<int, std::string> usernames;
+	
 	//void resetGame();
 	//void readInput(string input);
 	//void movePaddle(int player, int inputSelection);
@@ -238,6 +241,10 @@ public :void resetGame() {
 				}
 			}
 		}
+		void AssignName(int id, string name)
+		{
+			usernames.insert(std::make_pair(id, name));
+		}
 		string generateStateStr() {
 			ostringstream toReturn;
 			toReturn << ballPosY << ',' << ballPosX 
@@ -261,10 +268,27 @@ void openHandler(int clientID){
 		buffer = "01";
 		pong.resetGame();
 		cout << "assigning player nums.\n";
-		for (int i = 0; i < clientIDs.size(); i++) {
+		for (int i = 0; i < clientIDs.size(); i++) {  //also gives them all other names
 			ostringstream temp;
 			temp << i;
+			cout << "comparing i: " << i << endl;;
+			ostringstream list;
+			list << "N;";
+			for (int k = 0; k != pong.usernames.size(); k++)
+			{
+				if (k != i)
+				{
+					
+					list << pong.usernames[k];
+					list << ";";
+
+				}
+					
+					
+			}
+			server.wsSend(clientIDs[i], list.str());
 			server.wsSend(clientIDs[i], temp.str());
+			
 		}
 		cout << "sending stateStrings to all clients.\n\n";
 		for (int i = 0; i < clientIDs.size(); i++) {
@@ -293,6 +317,18 @@ void closeHandler(int clientID){
 
 /* called when a client sends a message to the server */
 void messageHandler(int clientID, string message){
+
+
+
+	if (message[0] == 'N')
+	{
+		string name;
+		name = message.substr(1);
+		
+		pong.AssignName(clientID, name);
+		cout << "Player " << clientID << " is " << name;
+		buffer = name;//?
+	}
 	buffer = message;
 	/*
 	ostringstream os;

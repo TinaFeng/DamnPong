@@ -33,9 +33,53 @@
                 text-align:right;
             }
 
+            #Player1 {
+                position: absolute;
+                top: 50;
+                right: 300px;
+                width: 100px;
+                text-align: right;
+            }
+            #Player2 {
+                position: absolute;
+                top: 100;
+                right: 300px;
+                width: 100px;
+                text-align: right;
+            }
+
+            #Player3 {
+                position: absolute;
+                top: 150;
+                right: 300px;
+                width: 100px;
+                text-align: right;
+            }
+
             #Score {
                 position: absolute;
                 top: 25px;
+                right: 300px;
+                width: 100px;
+                text-align: right;
+            }
+            #Score1 {
+                position: absolute;
+                top: 75px;
+                right: 300px;
+                width: 100px;
+                text-align: right;
+            }
+            #Score2 {
+                position: absolute;
+                top: 125px;
+                right: 300px;
+                width: 100px;
+                text-align: right;
+            }
+            #Score3 {
+                position: absolute;
+                top: 175px;
                 right: 300px;
                 width: 100px;
                 text-align: right;
@@ -65,10 +109,22 @@
         <p id="Player">Player</p>
         <br />
         <p id="Score">Score: 0</p>
+
+        <p id="Player1">Player</p>
+        <br />
+        <p id="Score1">Score: 0</p>
+
+        <p id="Player2">Player</p>
+        <br />
+        <p id="Score2">Score: 0</p>
+
+        <p id="Player3">Player</p>
+        <br />
+        <p id="Score3">Score: 0</p>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
         <script src="fancywebsocket.js"></script>
         <script>
-       
+
             //^ style thing to make it on the center;
 
             /// Client connection code from chat room
@@ -92,28 +148,30 @@
 
                 if (document.getElementById('ip').value != ''&& document.getElementById('name').value != '') //if IP and name are not empty
                 {
-              
+                   
 
                     log('Connecting...');
                     Server = new FancyWebSocket('ws://' + document.getElementById('ip').value + ':' + 8000);
 
-                    
+
                     //Let the user know we're connected
                     Server.bind('open', function () {
                         document.getElementById("Play").disabled = true;
                         log("Connected.");
-                    
+
                         document.getElementById("Player").innerText = document.getElementById('name').value; //change the player text to name you just typed in
-                    
-                        main(); // don't start the game until connecteds
-                        
-                     
+                        send("N" + document.getElementById('name').value); // sending 
+
+                        main(); // don't start the game until connects
+
+
                     });
 
                     //OH NOES! Disconnection occurred.
                     Server.bind('close', function (data) {
                         document.getElementById("Play").disabled = false;
                         log("Disconnected.");
+                        Server.disconnect();
                     });
 
                     //Log any messages sent from server
@@ -123,7 +181,7 @@
 
                             if (payload.toString() == "0") {
                                 Player_Index = 1;
-                       
+
                             }
                             else if (payload.toString() == "1") {
                                 Player_Index = 2;
@@ -134,11 +192,22 @@
                             else if (payload.toString() == "3") {
                                 Player_Index = 4;
                             }
-                          
+
                             Connected = true;
                         }
+                        else if (payload.toString()[0] == "N") //if we received name
+                        {
+                            log(payload);
+                            var names = payload.split(";");
+
+                
+                            document.getElementById("Player1").innerText = names[1];
+                            document.getElementById("Player2").innerText = names[2];
+                            document.getElementById("Player3").innerText = names[3];
+
+                        }
                         else {
-                            
+
                             //if the server didn't send player location, it should be the states of the game, server_Location will split the states into
                             //individual object(ball, then player1, future players etc split by ";")
                             Server_Location = payload.split(";");
@@ -153,7 +222,7 @@
                 {
                     log("IP or Nickname cannot be empty.");
                 }
-      
+
             }
 
             //server stuff ^
@@ -165,11 +234,11 @@
             //moving keys (only top)
             var LeftArrow = 37, RightArrow = 39;
             var UpArrow = 38, DownArrow = 40;
-            
+
             var score = 0;//score
             var Player_Index; // which player/color is the client, will be used to determine which section of server location is it
-            var Server_Location; // all the location data the server is hosting. It is a string consist of xy locations of each object(separated by ;) 
-            var Player_Location;// location that the player is drawing 
+            var Server_Location; // all the location data the server is hosting. It is a string consist of xy locations of each object(separated by ;)
+            var Player_Location;// location that the player is drawing
             var Ball_Location;//location of ball
 
             var init_pos = "300,295;45,300,0;300,555,0;555,300,0;300,45,0";
@@ -180,17 +249,17 @@
                 height :30,
 
                 update: function () {
-                    
-       
+
+
 
                     if (Server_Location != null)
                     {
 
                         Player_Location = Server_Location[Player_Index].split(","); // spliting player1 x y
-                
+
                         this.x = ~~Player_Location[1];  // YEAH INTEGER RIGHT
                         this.y = ~~Player_Location[0];
-                        
+
                         if (this.score != ~~Player_Location[2])
                         {
                             this.score = ~~Player_Location[2];
@@ -198,9 +267,9 @@
                         }
 
                     }
-                    
-                    
-        
+
+
+
                     if (Player_Index == 1 || Player_Index == 3) {
 
                         if (keystate[LeftArrow]) {
@@ -227,13 +296,13 @@
                     //index will change depends on which side the paddle is
                 },
                 draw: function () {  //300,300;45,290
-              
-       
-                    if (Server_Location == null) 
+
+
+                    if (Server_Location == null)
                         Server_Location = init_pos.split(";");
-                    //45 300, 300 555, 555 300 
                     //45 300, 300 555, 555 300
-                                    
+                    //45 300, 300 555, 555 300
+
 
                     //  log(Server_Location);
                     //red-top green-bottom yellow-left blue-right
@@ -257,13 +326,13 @@
                                 context.fillStyle = 'yellow';
                                 context.fillRect(Player_Location[1] - (this.height / 2), Player_Location[0] - (this.width / 2), this.height, this.width);
                            }
-               
+
                         }
-                    
+
                 }
                 };
-            
-          
+
+
             ball = {
                 x: null,
                 y: null,
@@ -279,52 +348,52 @@
                         this.y = ~~Ball_Location[1];
 
                     }
-              
+
 
                     //if (this.y <0 || this.y+this.radius > HEIGHT)
                     //{
-      
+
                     //    this.velocity.y *= -1;
 
                     //}//if out of bound vertically, going back  //going to remove for actual game since no borders
 
                     //if (this.x < 0 || this.x + this.radius > WIDTH) //horizontal
                     //{
-       
+
                     //    this.velocity.x *= -1;
 
                     //}
 
 
                     //var OnCollision = function (ax, ay, aw, ah, bx, by, bw, bh) {
-                
+
                     //  //  log("ax - " + ax + " ay - " +ay +  " aw - " +aw +" ah - " +ah + " bx - " +bx+  " by- " +by+  " bw- " +bw +  " bh- " +bh );
                     //    if (Player_Index == 1)
                     //    {
-           
+
                     //        //Top player:
                     //        //1:  (ball y - paddle y) <ball radius+paddle width
                     //        //2: bx+bw >ax  ball x is touching paddle x on the left
                     //        //3: bx-bw <ax+aw ball x is touching paddle x on the right
 
-                  
+
 
 
                     //        return ((by - ay) < (bw + ah)) && ((bx + bw) > ax) && ((bx - bw) < (ax + aw));
 
                     //    }
 
-                    //    /* 
+                    //    /*
 
                     //    The x position of the ball is greater than the x position of the brick.
                     //    The x position of the ball is less than the x position of the brick plus its width.
                     //    The y position of the ball is greater than the y position of the brick.
                     //    The y position of the ball is less than the y position of the brick plus its height.
                     //    */
-              
+
                     //};
 
-          
+
                     //if (OnCollision(player_T.x, player_T.y, player_T.width, player_T.height, // ADD ~~ TO CONVERT STRING BACK TO INT GODS DAMN IT JS
                     //        this.x, this.y, this.radius, this.radius)) //if ball collided with paddle
                     //{
@@ -336,7 +405,7 @@
 
                     //        if (hit_location < player_T.x + player_T.width / 2) // if hit is on the left of paddle
                     //        {
-                          
+
                     //            this.velocity.y *= -1;
                     //            this.velocity.x = -5;
 
@@ -350,7 +419,7 @@
 
                     //            else // if hits on center
                     //            {
-                          
+
                     //                this.velocity.y *= -1;
                     //                this.velocity.x *= -1;
                     //            }
@@ -374,7 +443,7 @@
 
             function main() {
 
-             
+
                 //create the canvas
                 canvas = document.createElement("canvas");
                 canvas.width = WIDTH;
@@ -383,7 +452,7 @@
                 document.body.appendChild(canvas);
 
 
-            
+
                 keystate = {};
                 document.addEventListener("keydown", function (evt) {
                     keystate[evt.keyCode] = true;
@@ -392,26 +461,26 @@
                 document.addEventListener("keyup", function (evt) {
                     delete keystate[evt.keyCode];
                 });
-             
+
                 init();
 
-             
+
                 var loop = function () {
-           
+
                     update();
-          
+
                     draw();
 
 
                     window.requestAnimationFrame(loop, canvas);
                 };
                 window.requestAnimationFrame(loop, canvas);
-   
+
             }
 
             function init() { //on start
-              
-                if (Player_Index == 1) //top player 
+
+                if (Player_Index == 1) //top player
                 {
                     player_T.x =45;
                     player_T.y = 300;
@@ -435,24 +504,24 @@
                     player_T.x = 300;
                     player_T.y = 45;
                 }
- 
 
 
-                
+
+
 
                 ball.x = 300;
                 ball.y = 300;
 
-       
+
             }
 
 
             function update() {
-   
+
                 // player_T.update();
-  
+
                 // ball.update();
-     
+
             }
             function draw() {
 
@@ -468,8 +537,8 @@
                 context.restore();
             }
 
-            
-         
+
+
         </script>
     </body>
 </html>
