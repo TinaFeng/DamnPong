@@ -328,7 +328,7 @@ void messageHandler(int clientID, string message){
 		
 		pong.AssignName(clientID, name);
 		cout << "Player " << clientID << " is " << name;
-		buffer = name;//?
+	//	buffer = name;//?
 	}
 	buffer = message;
 	/*
@@ -349,37 +349,12 @@ void messageHandler(int clientID, string message){
 /* called once per select() loop */
 void periodicHandler(){
     //static time_t next = time(NULL) + 1;
-	vector<int> clientIDs = server.getClientIDs();
-	if (clientIDs.size() == 4)
-	{
-		
-		for (int i = 0; i < clientIDs.size(); i++)
-		{
-			ostringstream list;
-			list << "N;";
-			cout << "Client ID: " << i << "name: " << pong.usernames[i] << endl;
-			for (int k = 0; k != pong.usernames.size(); k++)
-			{
-				if (k != i)
-				{
-
-					list << pong.usernames[k];
-					list << ";";
-
-				}
-
-
-			}
-			server.wsSend(clientIDs[i], list.str());
-
-		}
-		pong.name_assigned = true;
-	}
     //time_t current = time(NULL);
-    if (buffer!="05"){
+    if (buffer!="05" && pong.usernames.size() == 4){
 
-		if (!pong.name_assigned)
+		if (!pong.name_assigned && pong.usernames.size() == 4)
 		{
+			cout << "\n\n\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" << pong.usernames.size() << "\n\n\n";
 			vector<int> clientIDs = server.getClientIDs();
 			for (int i = 0; i < clientIDs.size(); i++)
 			{
