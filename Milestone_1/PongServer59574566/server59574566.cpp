@@ -5,10 +5,23 @@
 #include <time.h>
 #include "websocket.h"
 #include <map>
-using namespace std;
+#include <chrono>
+#include <queue>
+using namespace std;	
 
 webSocket server;
-string buffer;
+bool started = false;
+__int64 latency = 333;
+
+struct bufferMessage {
+	string info;
+	__int64 timestamp;
+};
+
+queue <bufferMessage> inbuffer;
+queue <bufferMessage> outbuffer;
+
+
 
 class PongGame {
 public:
@@ -266,7 +279,9 @@ void openHandler(int clientID){
 	cout << "new size of accepted client list: " << clientIDs.size() << "\n";
 	if (clientIDs.size() == 4) {
 		cout << "\nstarting game!\n";
-		buffer = "01";
+		
+		started = true;
+
 		pong.resetGame();
 		cout << "assigning player nums.\n";
 		for (int i = 0; i < clientIDs.size(); i++) {  //also gives them all other names
@@ -304,7 +319,9 @@ void openHandler(int clientID){
 /* called when a client disconnects */
 void closeHandler(int clientID){
 	cout << "telling connection number " << clientID << " to scram.\n\n";
-	buffer = "05";
+	
+
+	started = false;
     /*ostringstream os;
     os << "Stranger " << clientID << " has left.";
 
@@ -330,7 +347,12 @@ void messageHandler(int clientID, string message){
 		cout << "Player " << clientID << " is " << name;
 	//	buffer = name;//?
 	}
-	buffer = message;
+
+	bufferMessage buffer;
+	buffer.info = message;
+	chrono::milliseconds ms = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch());
+	buffer.timestamp = ms.count();
+	inbuffer.push(buffer);
 	/*
 	ostringstream os;
 	pong.readInput(message);
@@ -350,7 +372,25 @@ void messageHandler(int clientID, string message){
 void periodicHandler(){
     //static time_t next = time(NULL) + 1;
     //time_t current = time(NULL);
-    if (buffer!="05" && pong.usernames.size() == 4){
+
+	if (outbuffer.size() > 0 && started)
+	{
+		chrono::milliseconds ms = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch());
+
+		if (ms.count() > outbuffer.front().timestamp + latency)
+		{
+			vector<int> clientIDs = server.getClientIDs();
+			for (int i = 0; i < clientIDs.size(); i++)
+			{
+				server.wsSend(clientIDs[i], outbuffer.front().info);
+			}
+
+			outbuffer.pop();
+		}
+	}
+
+
+    if (started && pong.usernames.size() == 4){
 
 		if (!pong.name_assigned && pong.usernames.size() == 4)
 		{
@@ -385,25 +425,28 @@ void periodicHandler(){
         //timestring = timestring.substr(0, timestring.size() - 1);
         //os << timestring;
 		//ostringstream os;
-
-		pong.readInput(buffer);
-		pong.updateBallPositions();
-
-        vector<int> clientIDs = server.getClientIDs();
-		for (int i = 0; i < clientIDs.size(); i++) 
+		chrono::milliseconds ms = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch());
+		while (inbuffer.size() >= 1)
 		{
-			//cout << "message out to: p" << i << " saying " << pong.generateStateStr() << "\n";
-			server.wsSend(clientIDs[i], pong.generateStateStr());
+			if (ms.count() <= inbuffer.front().timestamp + latency)
+				break;
+			string bufferinfo = inbuffer.front().info;
+			inbuffer.pop();
+			pong.readInput(bufferinfo);
 		}
-            //server.wsSend(clientIDs[i], os.str());
-		buffer = "01";
-		//next = time(NULL) + .75;
+		
+		pong.updateBallPositions();	
+		bufferMessage buffer;
+		buffer.info = pong.generateStateStr();
+		buffer.timestamp = ms.count();
+		outbuffer.push(buffer);
     }
 }
 
 int main(int argc, char *argv[]){
     int port = 8000;
-	buffer = "05";
+	
+	started = false;
 
     /* set event handler */
     server.setOpenHandler(openHandler);
