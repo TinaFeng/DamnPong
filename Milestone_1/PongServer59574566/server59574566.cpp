@@ -11,7 +11,7 @@ using namespace std;
 
 webSocket server;
 bool started = false;
-__int64 latency = 333;
+__int64 latency = 0;
 
 struct bufferMessage {
 	string info;
@@ -373,7 +373,7 @@ void periodicHandler(){
     //static time_t next = time(NULL) + 1;
     //time_t current = time(NULL);
 
-	if (outbuffer.size() > 0 && started)
+	while (outbuffer.size() > 0 && started)
 	{
 		chrono::milliseconds ms = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch());
 
@@ -387,6 +387,8 @@ void periodicHandler(){
 
 			outbuffer.pop();
 		}
+		else
+			break;
 	}
 
 

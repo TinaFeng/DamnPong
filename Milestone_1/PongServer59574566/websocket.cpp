@@ -26,6 +26,7 @@
 #include "websocket.h"
 #include "base64.h"
 #include "sha1.h"
+#include <chrono>
 
 using namespace std;
 
@@ -715,8 +716,23 @@ void webSocket::startServer(int port){
     struct timeval timeout;
     time_t nextPingTime = time(NULL) + 1;
 	int kappa = 0;
+
+	chrono::milliseconds startTimeMS = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch());
+	int startTime = startTimeMS.count();
+	int deltaTime = 15;
+
     while (FD_ISSET(listenfd, &fds)){
-		kappa++;
+		//kappa++;
+
+		chrono::milliseconds currTimeMS = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch());
+		int currTime = currTimeMS.count();
+
+		if (currTime >= startTime + deltaTime) {
+			//kappa = 0;
+			startTime = currTime;
+			callPeriodic();
+		}
+
         read_fds = fds;
         timeout.tv_sec = 0;
         timeout.tv_usec = 10000;
@@ -758,10 +774,6 @@ void webSocket::startServer(int port){
             nextPingTime = time(NULL) + 1;
         }
 
-		if (kappa > 2) {
-			kappa = 0;
-			callPeriodic();
-		}
     }
 }
 
