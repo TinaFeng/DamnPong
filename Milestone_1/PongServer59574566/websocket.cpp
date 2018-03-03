@@ -720,7 +720,7 @@ void webSocket::startServer(int port){
 
 	chrono::milliseconds startTimeMS = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch());
 	int startTime = startTimeMS.count();
-	int deltaTime = 15;
+	int deltaTime = 20;
 
     while (FD_ISSET(listenfd, &fds)){
 		//kappa++;

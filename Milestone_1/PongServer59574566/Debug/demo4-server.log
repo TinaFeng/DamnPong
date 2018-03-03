@@ -13,6 +13,7 @@ c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59
 c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(237): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
 c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(293): warning C4018: '<': signed/unsigned mismatch
 c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(316): warning C4018: '<': signed/unsigned mismatch
-c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(392): warning C4018: '<': signed/unsigned mismatch
-c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(417): warning C4018: '<': signed/unsigned mismatch
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(358): warning C4018: '<': signed/unsigned mismatch
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(399): warning C4018: '<': signed/unsigned mismatch
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(424): warning C4018: '<': signed/unsigned mismatch
   demo4-server.vcxproj -> C:\Users\Owner\Documents\GitHub\DamnPong\Milestone_1\PongServer59574566\Debug\demo4-server.exe
