@@ -87,9 +87,9 @@
             #Ping {
                 position: absolute;
                 top: 700px;
-                right: 100px;
+                right: 200px;
                 width: 100px;
-                text-align: right;
+                text-align: left;
             }
 
             canvas{
@@ -141,6 +141,8 @@
             var Connected = false;
             var Last_Stamp = 0;
             var ping;
+            var time_update = false;
+            var update_counter = 0;
             function log(text) {
                 $log = $('#log');
                 //Add text to log
@@ -205,13 +207,16 @@
 
                             Connected = true;
                         }
-                        else if (payload.toString()[0] == "T") // change in the future, waiting for process command
+                        else if (payload.toString()[0] == "R") // change in the future, waiting for process command
                         {
-
+                            send("R");
+                            time_update = !time_update;
+                            update_counter++;
+                            
                         }
                         else if (payload.toString()[0] == "N") //if we received name
                         {
-                            log(payload);
+                         //   log(payload);
                             var names = payload.split(";");
 
                             document.getElementById("Player").innerText = names[1];
@@ -224,17 +229,23 @@
 
                             //if the server didn't send player location, it should be the states of the game, server_Location will split the states into
                             //individual object(ball, then player1, future players etc split by ";")
-                            if (Last_Stamp != 0)
+                            Server_Location = payload.split(";");
+
+                            if (Last_Stamp != 0 && update_counter == 15)
                             {
 
                             
                                 var current = Date.now();
-                                ping = (current - Server_Location[Server_Location.length - 1] - Last_Stamp) / 2;
-                                log("current: " + current.toString() + " Sever location: " + Server_Location);
-                                document.getElementById('Ping').innerHTML = "Ping: " + ping.toString()[ping.toString().length - 2] + ping.toString()[ping.toString().length - 1];
+                                ping = (~~current - ~~Server_Location[Server_Location.length - 1] - ~~Last_Stamp) / 2;
+                            //    log(ping);
+                                // log("difference: " + (~~current - ~~Last_Stamp).toString() );
+                                var output;
+                                output = Math.abs(Math.round(ping)).toString();
+                                document.getElementById('Ping').innerHTML = "Ping: " + output;
+                                update_counter = 0;
+                      
                             }
-                            Server_Location = payload.split(";");
-                       
+            
                             player_T.update();
                             ball.update();
                         }
@@ -305,8 +316,9 @@
                             send((Player_Index - 1).toString() + "0");
                         }
 
+                        if (time_update)
                         Last_Stamp = Date.now();
-                        log("Last_Stamp: " + Last_Stamp.toString());
+                  //      log("Last_Stamp: " + Last_Stamp.toString());
                     }
                     else if (Player_Index ==2 || Player_Index ==4)
                     {
@@ -318,9 +330,9 @@
                           //  log((Player_Index - 1).toString() + "2");
                             send((Player_Index - 1).toString() + "2");
                         }
-
+                        if (time_update)
                         Last_Stamp = Date.now();
-                        log("Last_Stamp: " + Last_Stamp.toString());
+                   //     log("Last_Stamp: " + Last_Stamp.toString());
                     }
                     //index will change depends on which side the paddle is
                 },
