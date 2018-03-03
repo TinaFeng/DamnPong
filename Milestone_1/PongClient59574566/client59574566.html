@@ -141,8 +141,10 @@
             var Connected = false;
             var Last_Stamp = 0;
             var ping;
-            var time_update = false;
-            var update_counter = 0;
+            var time_update = false; // when do we update the timestamp
+            var update_counter = 0; //how many server messages do we update ping
+
+            var Start; // the starting time of client
             function log(text) {
                 $log = $('#log');
                 //Add text to log
@@ -173,7 +175,8 @@
 
                         document.getElementById("Player").innerText = document.getElementById('name').value; //change the player text to name you just typed in
                         send("N" + document.getElementById('name').value); // sending 
-
+                        Start = Date.now();
+                        
                         main(); // don't start the game until connects
 
 
@@ -237,11 +240,15 @@
                             
                                 var current = Date.now();
                                 ping = (~~current - ~~Server_Location[Server_Location.length - 1] - ~~Last_Stamp) / 2;
-                            //    log(ping);
-                                // log("difference: " + (~~current - ~~Last_Stamp).toString() );
                                 var output;
                                 output = Math.abs(Math.round(ping)).toString();
                                 document.getElementById('Ping').innerHTML = "Ping: " + output;
+
+                                //debug lines
+                                var time = Date.now() - Start;
+                                log("Time: " + (((time/1000)/60)*100).toString());
+                                log("Ping: " + output);
+
                                 update_counter = 0;
                       
                             }
