@@ -84,6 +84,13 @@
                 width: 100px;
                 text-align: right;
             }
+            #Ping {
+                position: absolute;
+                top: 700px;
+                right: 100px;
+                width: 100px;
+                text-align: right;
+            }
 
             canvas{
                 position: absolute;
@@ -121,6 +128,8 @@
         <p id="Player3">Player</p>
         <br />
         <p id="Score3">Score: 0</p>
+
+        <p id="Ping"> Ping: 0 </p>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
         <script src="fancywebsocket.js"></script>
         <script>
@@ -129,8 +138,9 @@
 
             /// Client connection code from chat room
             var Server;
-
             var Connected = false;
+            var Last_Stamp = 0;
+            var ping;
             function log(text) {
                 $log = $('#log');
                 //Add text to log
@@ -195,6 +205,10 @@
 
                             Connected = true;
                         }
+                        else if (payload.toString()[0] == "T") // change in the future, waiting for process command
+                        {
+
+                        }
                         else if (payload.toString()[0] == "N") //if we received name
                         {
                             log(payload);
@@ -210,7 +224,17 @@
 
                             //if the server didn't send player location, it should be the states of the game, server_Location will split the states into
                             //individual object(ball, then player1, future players etc split by ";")
+                            if (Last_Stamp != 0)
+                            {
+
+                            
+                                var current = Date.now();
+                                ping = (current - Server_Location[Server_Location.length - 1] - Last_Stamp) / 2;
+                                log("current: " + current.toString() + " Sever location: " + Server_Location);
+                                document.getElementById('Ping').innerHTML = "Ping: " + ping.toString()[ping.toString().length - 2] + ping.toString()[ping.toString().length - 1];
+                            }
                             Server_Location = payload.split(";");
+                       
                             player_T.update();
                             ball.update();
                         }
@@ -268,18 +292,21 @@
                     }
 
 
-
                     if (Player_Index == 1 || Player_Index == 3) {
 
                         if (keystate[LeftArrow]) {
 
 
                             send((Player_Index - 1).toString() + "2");
+
                         }
                         else if (keystate[RightArrow]) {
 
                             send((Player_Index - 1).toString() + "0");
                         }
+
+                        Last_Stamp = Date.now();
+                        log("Last_Stamp: " + Last_Stamp.toString());
                     }
                     else if (Player_Index ==2 || Player_Index ==4)
                     {
@@ -291,6 +318,9 @@
                           //  log((Player_Index - 1).toString() + "2");
                             send((Player_Index - 1).toString() + "2");
                         }
+
+                        Last_Stamp = Date.now();
+                        log("Last_Stamp: " + Last_Stamp.toString());
                     }
                     //index will change depends on which side the paddle is
                 },
@@ -369,87 +399,6 @@
                         this.y = ~~Ball_Location[1];
 
                     }
-
-
-                    //if (this.y <0 || this.y+this.radius > HEIGHT)
-                    //{
-
-                    //    this.velocity.y *= -1;
-
-                    //}//if out of bound vertically, going back  //going to remove for actual game since no borders
-
-                    //if (this.x < 0 || this.x + this.radius > WIDTH) //horizontal
-                    //{
-
-                    //    this.velocity.x *= -1;
-
-                    //}
-
-
-                    //var OnCollision = function (ax, ay, aw, ah, bx, by, bw, bh) {
-
-                    //  //  log("ax - " + ax + " ay - " +ay +  " aw - " +aw +" ah - " +ah + " bx - " +bx+  " by- " +by+  " bw- " +bw +  " bh- " +bh );
-                    //    if (Player_Index == 1)
-                    //    {
-
-                    //        //Top player:
-                    //        //1:  (ball y - paddle y) <ball radius+paddle width
-                    //        //2: bx+bw >ax  ball x is touching paddle x on the left
-                    //        //3: bx-bw <ax+aw ball x is touching paddle x on the right
-
-
-
-
-                    //        return ((by - ay) < (bw + ah)) && ((bx + bw) > ax) && ((bx - bw) < (ax + aw));
-
-                    //    }
-
-                    //    /*
-
-                    //    The x position of the ball is greater than the x position of the brick.
-                    //    The x position of the ball is less than the x position of the brick plus its width.
-                    //    The y position of the ball is greater than the y position of the brick.
-                    //    The y position of the ball is less than the y position of the brick plus its height.
-                    //    */
-
-                    //};
-
-
-                    //if (OnCollision(player_T.x, player_T.y, player_T.width, player_T.height, // ADD ~~ TO CONVERT STRING BACK TO INT GODS DAMN IT JS
-                    //        this.x, this.y, this.radius, this.radius)) //if ball collided with paddle
-                    //{
-
-                    //    if (Player_Index == 1) {
-
-                    //        var hit_location = this.x+ this.radius/2;
-                    //  //      log(hit_location);
-
-                    //        if (hit_location < player_T.x + player_T.width / 2) // if hit is on the left of paddle
-                    //        {
-
-                    //            this.velocity.y *= -1;
-                    //            this.velocity.x = -5;
-
-                    //        }
-                    //            else if ((hit_location > player_T.x + player_T.width / 2)) //if hits on the right of paddle
-                    //            {
-                    //                this.velocity.y *= -1;
-                    //                this.velocity.x = 5;
-                    //            }
-
-
-                    //            else // if hits on center
-                    //            {
-
-                    //                this.velocity.y *= -1;
-                    //                this.velocity.x *= -1;
-                    //            }
-                    //    }
-
-                    //    score++;
-                    //    document.getElementById("Score").innerText = "Score: " + score;
-
-                    //};
 
 
                 },
