@@ -12,9 +12,9 @@ using namespace std;
 
 webSocket server;
 bool started = false;
-__int64 latency = 50, minLatency = 0, maxLatency = 100, latencyAcceleration = 1;
+__int64 latency = 50, minLatency = 0, maxLatency = 2000, latencyAcceleration = 1;
 int numTicksToIgnore = 5, ticksSinceLastActivation = 0;
-int artificialLatencyType = 0;//0 is fixed, 1 is random, 2 is incremental
+int artificialLatencyType = 2;//0 is fixed, 1 is random, 2 is incremental
 
 
 struct bufferMessage {
@@ -363,7 +363,7 @@ void messageHandler(int clientID, string message){
 			if (clientIDs[i] == clientID) {
 				playersPings[i].after = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch()).count();
 				playersPings[i].expected = (playersPings[i].after - playersPings[i].before) / 2;
-				std::cout << "Player " << std::to_string(i) << "'s expected ping is " << std::to_string(playersPings[i].expected) << std::endl;
+				//std::cout << "Player " << std::to_string(i) << "'s expected ping is " << std::to_string(playersPings[i].expected) << std::endl;
 			}
 		}
 	}
@@ -392,18 +392,21 @@ void messageHandler(int clientID, string message){
 void periodicHandler(){
     //static time_t next = time(NULL) + 1;
     //time_t current = time(NULL);
-	//assigning latency value according to selected latency pattern
-	if (artificialLatencyType == 0) {
-		//do nothing...?
+	if (started) {
+		//assigning latency value according to selected latency pattern
+		if (artificialLatencyType == 0) {
+			//do nothing...?
+		}
+		else if (artificialLatencyType == 1) {
+			latency = rand() % 101;
+		}
+		else if (ticksSinceLastActivation++ >= numTicksToIgnore) {
+			ticksSinceLastActivation = 0;
+			latency = (latency < maxLatency) ? (latency + latencyAcceleration) : maxLatency;
+		}
+		//end latency adjustment
+		cout << "latency added: " << latency << endl;
 	}
-	else if (artificialLatencyType == 1) {
-		latency = rand() % 101;
-	}
-	else if (ticksSinceLastActivation++ >= numTicksToIgnore) {
-		ticksSinceLastActivation = 0;
-		latency = (latency < maxLatency) ? (latency + latencyAcceleration) : maxLatency;
-	}
-	//end latency adjustment
 	while (outbuffer.size() > 0 && started)
 	{
 		chrono::milliseconds ms = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch());
@@ -414,7 +417,7 @@ void periodicHandler(){
 			for (int i = 0; i < clientIDs.size(); i++)
 			{
 				//send the state message to client in stack, append the total calculation time to the end of the passed message
-				server.wsSend(clientIDs[i], outbuffer.front().info + ";" + std::to_string(chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch()).count() - outbuffer.front().timestamp));
+				server.wsSend(clientIDs[i], outbuffer.front().info + ";" + std::to_string((chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch()).count() - outbuffer.front().timestamp)));
 				
 				//next begin serverside ping calculation
 				//first log the current time and the client ID, before sending the ping request
