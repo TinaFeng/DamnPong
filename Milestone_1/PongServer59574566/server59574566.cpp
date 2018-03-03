@@ -354,7 +354,14 @@ void messageHandler(int clientID, string message){
 	}
 	//special message check: Return Message (for ping calculation)
 	else if (message[0] == 'R') {
-
+		vector<int> clientIDs = server.getClientIDs();
+		for (int i = 0; i < clientIDs.size(); i++) {
+			if (clientIDs[i] == clientID) {
+				playersPings[i].before = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch()).count();
+				playersPings[i].expected = (playersPings[i].after - playersPings[i].before) / 2;
+				std::cout << "Player " << std::to_string(i) << "'s expected ping is " << std::to_string(playersPings[i].expected) << std::endl;
+			}
+		}
 	}
 
 	bufferMessage buffer;
@@ -396,7 +403,7 @@ void periodicHandler(){
 				
 				//next begin serverside ping calculation
 				//first log the current time and the client ID, before sending the ping request
-				//playersPings[i]. = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch()).count();
+				playersPings[i].before = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch()).count();
 				//send a ping request to client as well
 				server.wsSend(clientIDs[i], "R");
 			}
