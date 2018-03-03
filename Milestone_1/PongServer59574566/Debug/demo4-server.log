@@ -1,18 +1,18 @@
 ﻿  server59574566.cpp
-c:\users\christian\damnpong\milestone_1\pongserver59574566\server59574566.cpp(55): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\christian\damnpong\milestone_1\pongserver59574566\server59574566.cpp(56): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\christian\damnpong\milestone_1\pongserver59574566\server59574566.cpp(181): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\christian\damnpong\milestone_1\pongserver59574566\server59574566.cpp(182): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\christian\damnpong\milestone_1\pongserver59574566\server59574566.cpp(194): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\christian\damnpong\milestone_1\pongserver59574566\server59574566.cpp(195): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\christian\damnpong\milestone_1\pongserver59574566\server59574566.cpp(208): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\christian\damnpong\milestone_1\pongserver59574566\server59574566.cpp(209): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\christian\damnpong\milestone_1\pongserver59574566\server59574566.cpp(222): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\christian\damnpong\milestone_1\pongserver59574566\server59574566.cpp(223): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\christian\damnpong\milestone_1\pongserver59574566\server59574566.cpp(230): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
-c:\users\christian\damnpong\milestone_1\pongserver59574566\server59574566.cpp(231): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
-c:\users\christian\damnpong\milestone_1\pongserver59574566\server59574566.cpp(287): warning C4018: '<': signed/unsigned mismatch
-c:\users\christian\damnpong\milestone_1\pongserver59574566\server59574566.cpp(310): warning C4018: '<': signed/unsigned mismatch
-c:\users\christian\damnpong\milestone_1\pongserver59574566\server59574566.cpp(383): warning C4018: '<': signed/unsigned mismatch
-c:\users\christian\damnpong\milestone_1\pongserver59574566\server59574566.cpp(401): warning C4018: '<': signed/unsigned mismatch
-  demo4-server.vcxproj -> C:\Users\Christian\DamnPong\Milestone_1\PongServer59574566\Debug\demo4-server.exe
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(55): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(56): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(181): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(182): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(194): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(195): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(208): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(209): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(222): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(223): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(230): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(231): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(287): warning C4018: '<': signed/unsigned mismatch
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(310): warning C4018: '<': signed/unsigned mismatch
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(383): warning C4018: '<': signed/unsigned mismatch
+c:\users\owner\documents\github\damnpong\milestone_1\pongserver59574566\server59574566.cpp(401): warning C4018: '<': signed/unsigned mismatch
+  demo4-server.vcxproj -> C:\Users\Owner\Documents\GitHub\DamnPong\Milestone_1\PongServer59574566\Debug\demo4-server.exe

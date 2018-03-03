@@ -21,7 +21,13 @@ struct bufferMessage {
 queue <bufferMessage> inbuffer;
 queue <bufferMessage> outbuffer;
 
+//structure to hold two time values and an estimated ping value
+struct messageTimer {
+	__int64 before, after, expected;
+};
 
+//hard coded container for the 4 players' times
+messageTimer* playersPings = new messageTimer[4];
 
 class PongGame {
 public:
@@ -337,7 +343,7 @@ void closeHandler(int clientID){
 void messageHandler(int clientID, string message){
 
 
-
+	//special message check: Name Message
 	if (message[0] == 'N')
 	{
 		string name;
@@ -345,7 +351,10 @@ void messageHandler(int clientID, string message){
 		
 		pong.AssignName(clientID, name);
 		cout << "Player " << clientID << " is " << name;
-	//	buffer = name;//?
+	}
+	//special message check: Return Message (for ping calculation)
+	else if (message[0] == 'R') {
+
 	}
 
 	bufferMessage buffer;
@@ -382,7 +391,14 @@ void periodicHandler(){
 			vector<int> clientIDs = server.getClientIDs();
 			for (int i = 0; i < clientIDs.size(); i++)
 			{
-				server.wsSend(clientIDs[i], outbuffer.front().info);
+				//send the state message to client in stack, append the total calculation time to the end of the passed message
+				server.wsSend(clientIDs[i], outbuffer.front().info + ";" + std::to_string(chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch()).count() - outbuffer.front().timestamp));
+				
+				//next begin serverside ping calculation
+				//first log the current time and the client ID, before sending the ping request
+				//playersPings[i]. = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch()).count();
+				//send a ping request to client as well
+				server.wsSend(clientIDs[i], "R");
 			}
 
 			outbuffer.pop();
