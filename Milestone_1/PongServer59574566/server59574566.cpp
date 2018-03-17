@@ -389,48 +389,54 @@ void messageHandler(int clientID, string message){
 }
 
 /* called once per select() loop */
-void periodicHandler(){
+void periodicHandler(bool run){
     //static time_t next = time(NULL) + 1;
     //time_t current = time(NULL);
-	if (started) {
-		//assigning latency value according to selected latency pattern
-		if (artificialLatencyType == 0) {
-			//do nothing...?
-		}
-		else if (artificialLatencyType == 1) {
-			latency = rand() % 101;
-		}
-		else if (ticksSinceLastActivation++ >= numTicksToIgnore) {
-			ticksSinceLastActivation = 0;
-			latency = (latency < maxLatency) ? (latency + latencyAcceleration) : maxLatency;
-		}
-		//end latency adjustment
-		cout << "latency added: " << latency << endl;
-	}
-	while (outbuffer.size() > 0 && started)
+	if (run)
 	{
-		chrono::milliseconds ms = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch());
-
-		if (ms.count() > outbuffer.front().timestamp + latency)
-		{
-			vector<int> clientIDs = server.getClientIDs();
-			for (int i = 0; i < clientIDs.size(); i++)
-			{
-				//send the state message to client in stack, append the total calculation time to the end of the passed message
-				server.wsSend(clientIDs[i], outbuffer.front().info + ";" + std::to_string((chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch()).count() - outbuffer.front().timestamp)));
-				
-				//next begin serverside ping calculation
-				//first log the current time and the client ID, before sending the ping request
-				playersPings[i].before = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch()).count();
-				//send a ping request to client as well
-				server.wsSend(clientIDs[i], "R");
+		if (started) {
+			//assigning latency value according to selected latency pattern
+			if (artificialLatencyType == 0) {
+				//do nothing...?
 			}
-
-			outbuffer.pop();
+			else if (artificialLatencyType == 1) {
+				latency = rand() % 101;
+			}
+			else if (ticksSinceLastActivation++ >= numTicksToIgnore) {
+				ticksSinceLastActivation = 0;
+				latency = (latency < maxLatency) ? (latency + latencyAcceleration) : maxLatency;
+			}
+			//end latency adjustment
+			cout << "latency added: " << latency << endl;
 		}
-		else
-			break;
+		while (outbuffer.size() > 0 && started)
+		{
+			chrono::milliseconds ms = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch());
+
+			if (ms.count() > outbuffer.front().timestamp + latency)
+			{
+				vector<int> clientIDs = server.getClientIDs();
+				for (int i = 0; i < clientIDs.size(); i++)
+				{
+					//send the state message to client in stack, append the total calculation time to the end of the passed message
+					server.wsSend(clientIDs[i], outbuffer.front().info + ";" + std::to_string((chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch()).count() - outbuffer.front().timestamp)));
+
+					//next begin serverside ping calculation
+					//first log the current time and the client ID, before sending the ping request
+					playersPings[i].before = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch()).count();
+					//send a ping request to client as well
+					server.wsSend(clientIDs[i], "R");
+				}
+
+				outbuffer.pop();
+			}
+			else
+				break;  
+		}
+		cout << "Run" << std::endl;
 	}
+	else
+		cout << "Wait" << std::endl;
 
 
     if (started && pong.usernames.size() == 4){

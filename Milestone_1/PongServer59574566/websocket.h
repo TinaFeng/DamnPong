@@ -16,6 +16,7 @@
 using namespace std;
 
 typedef void (*nullCallback)();
+typedef void(*boolCallback)(bool);
 typedef void (*defaultCallback)(int);
 typedef void (*messageCallback)(int, string);
 
@@ -91,7 +92,7 @@ public:
     void setOpenHandler(defaultCallback callback);
     void setCloseHandler(defaultCallback callback);
     void setMessageHandler(messageCallback callback);
-    void setPeriodicHandler(nullCallback callback);
+    void setPeriodicHandler(boolCallback callback);
     void startServer(int port);
     void stopServer();
     bool wsSend(int clientID, string message, bool binary = false);
@@ -122,7 +123,7 @@ private:
     defaultCallback callOnOpen;
     defaultCallback callOnClose;
     messageCallback callOnMessage;
-    nullCallback callPeriodic;
+    boolCallback callPeriodic;
 };
 
 #endif

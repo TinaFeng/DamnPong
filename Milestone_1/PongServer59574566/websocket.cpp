@@ -671,7 +671,7 @@ void webSocket::setMessageHandler(messageCallback callback){
     callOnMessage = callback;
 }
 
-void webSocket::setPeriodicHandler(nullCallback callback){
+void webSocket::setPeriodicHandler(boolCallback callback){
     callPeriodic = callback;
 }
 
@@ -731,8 +731,10 @@ void webSocket::startServer(int port){
 		if (currTime >= startTime + deltaTime) {
 			//kappa = 0;
 			startTime = currTime;
-			callPeriodic();
+			callPeriodic(true);
 		}
+		else
+			callPeriodic(false);
 
         read_fds = fds;
         timeout.tv_sec = 0;
