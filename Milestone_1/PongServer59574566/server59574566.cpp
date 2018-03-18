@@ -12,9 +12,9 @@ using namespace std;
 
 webSocket server;
 bool started = false;
-__int64 latency = 50, minLatency = 0, maxLatency = 2000, latencyAcceleration = 40;
+__int64 latency = 5, minLatency = 0, maxLatency = 2000, latencyAcceleration = 40;
 int numTicksToIgnore = 5, ticksSinceLastActivation = 0;
-int artificialLatencyType = 1;//0 is fixed, 1 is random, 2 is incremental
+int artificialLatencyType = 0;//0 is fixed, 1 is random, 2 is incremental
 
 
 struct bufferMessage {
@@ -24,6 +24,7 @@ struct bufferMessage {
 
 queue <bufferMessage> inbuffer;
 queue <bufferMessage> outbuffer;
+queue <bufferMessage> compensatedBuffer[4];
 
 //structure to hold two time values and an estimated ping value
 struct messageTimer {
@@ -392,8 +393,11 @@ void messageHandler(int clientID, string message){
 void periodicHandler(bool run){
     //static time_t next = time(NULL) + 1;
     //time_t current = time(NULL);
+	if (!started)
+		return;
 	if (run)
 	{
+		
 		if (started) {
 			//assigning latency value according to selected latency pattern
 			if (artificialLatencyType == 0) {
@@ -407,89 +411,141 @@ void periodicHandler(bool run){
 				latency = (latency < maxLatency) ? (latency + latencyAcceleration) : maxLatency;
 			}
 			//end latency adjustment
-			cout << "latency added: " << latency << endl;
-		}
-		while (outbuffer.size() > 0 && started)
-		{
-			chrono::milliseconds ms = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch());
-
-			if (ms.count() > outbuffer.front().timestamp + latency)
+			//cout << "latency added: " << latency << endl;
+			__int64 highestPing = 0;
+			//cout << "start" << std::endl;
+			for (int i = 0; i < 4; ++i)
 			{
-				vector<int> clientIDs = server.getClientIDs();
-				for (int i = 0; i < clientIDs.size(); i++)
+				//cout << playersPings[i].expected << std::endl;
+				if (playersPings[i].expected > highestPing)
 				{
+					highestPing = playersPings[i].expected;
+					//cout << i << std::endl;
+				}
+			}
+
+
+			while (outbuffer.size() > 0)
+			{
+				chrono::milliseconds ms = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch());
+
+				if (ms.count() > outbuffer.front().timestamp + latency)
+				{
+					vector<int> clientIDs = server.getClientIDs();
+					for (int i = 0; i < clientIDs.size(); i++)
+					{
+
+
+						bufferMessage buffer;
+						buffer.info = outbuffer.front().info;
+						buffer.timestamp = ms.count();
+						__int64 pingdiff = highestPing - playersPings[i].expected;
+						//cout << "The timestamp: " << buffer.timestamp << std::endl;
+						//cout << "The high ping: " << highestPing << std::endl;
+						//cout << "The current ping: " << playersPings[i].expected << std::endl;
+						//cout << "The pingdiff: " << pingdiff << std::endl;
+						buffer.timestamp += pingdiff;
+						//cout << "The total: " << buffer.timestamp << std::endl;
+						compensatedBuffer[i].push(buffer);
+
+						//send the state message to client in stack, append the total calculation time to the end of the passed message
+						//server.wsSend(clientIDs[i], outbuffer.front().info + ";" + std::to_string((chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch()).count() - outbuffer.front().timestamp)));
+
+						//next begin serverside ping calculation
+						//first log the current time and the client ID, before sending the ping request
+						//playersPings[i].before = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch()).count();
+						//send a ping request to client as well
+						//server.wsSend(clientIDs[i], "R");
+					}
+
+					outbuffer.pop();
+				}
+				else
+					break;
+			}
+
+
+			if (pong.usernames.size() == 4) {
+
+				if (!pong.name_assigned && pong.usernames.size() == 4)
+				{
+					cout << "\n\n\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" << pong.usernames.size() << "\n\n\n";
+					vector<int> clientIDs = server.getClientIDs();
+					for (int i = 0; i < clientIDs.size(); i++)
+					{
+						ostringstream list;
+						list << "N;";
+
+						cout << "Client ID: " << i << "name: " << pong.usernames[i] << endl;
+						for (int k = 0; k != pong.usernames.size(); k++)
+						{
+
+							list << pong.usernames[k];
+							list << ";";
+						}
+						server.wsSend(clientIDs[i], list.str());
+
+					}
+					pong.name_assigned = true;
+				}
+				//ostringstream os;
+				//Deprecated ctime API in Windows 10
+				//char timecstring[26];
+				//ctime_s(timecstring, sizeof(timecstring), &current);
+				//string timestring(timecstring);
+				//timestring = timestring.substr(0, timestring.size() - 1);
+				//os << timestring;
+				//ostringstream os;
+				chrono::milliseconds ms = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch());
+				while (inbuffer.size() >= 1)
+				{
+					if (ms.count() <= inbuffer.front().timestamp + latency)
+						break;
+					string bufferinfo = inbuffer.front().info;
+					inbuffer.pop();
+					pong.readInput(bufferinfo);
+				}
+
+				pong.updateBallPositions();
+				bufferMessage buffer;
+				buffer.info = pong.generateStateStr();
+				buffer.timestamp = ms.count();
+				outbuffer.push(buffer);
+			}
+		}
+    }
+	else
+	{
+		vector<int> clientIDs = server.getClientIDs();
+		for (int i = 0; i < clientIDs.size(); i++)
+		{
+			while (compensatedBuffer[i].size() > 0 && started)
+			{
+
+				chrono::milliseconds ms = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch());
+
+				//cout << "Rn it: " << ms.count() << std::endl;
+
+				if (ms.count() > compensatedBuffer[i].front().timestamp)
+				{
+
 					//send the state message to client in stack, append the total calculation time to the end of the passed message
-					server.wsSend(clientIDs[i], outbuffer.front().info + ";" + std::to_string((chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch()).count() - outbuffer.front().timestamp)));
+					server.wsSend(clientIDs[i], compensatedBuffer[i].front().info + ";" + std::to_string((chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch()).count() - compensatedBuffer[i].front().timestamp)));
 
 					//next begin serverside ping calculation
 					//first log the current time and the client ID, before sending the ping request
 					playersPings[i].before = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch()).count();
 					//send a ping request to client as well
 					server.wsSend(clientIDs[i], "R");
-				}
 
-				outbuffer.pop();
+
+					compensatedBuffer[i].pop();
+				}
+				else
+					break;
 			}
-			else
-				break;  
 		}
-		cout << "Run" << std::endl;
 	}
-	else
-		cout << "Wait" << std::endl;
-
-
-    if (started && pong.usernames.size() == 4){
-
-		if (!pong.name_assigned && pong.usernames.size() == 4)
-		{
-			cout << "\n\n\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" << pong.usernames.size() << "\n\n\n";
-			vector<int> clientIDs = server.getClientIDs();
-			for (int i = 0; i < clientIDs.size(); i++)
-			{
-				ostringstream list;
-				list << "N;";
-
-				cout << "Client ID: " << i << "name: " << pong.usernames[i] << endl;
-				for (int k = 0; k != pong.usernames.size(); k++)
-				{
-
-						list << pong.usernames[k];
-						list << ";";
-
-					
-
-
-				}
-				server.wsSend(clientIDs[i], list.str());
-
-			}
-			pong.name_assigned = true;
-		}
-        //ostringstream os;
-		//Deprecated ctime API in Windows 10
-		//char timecstring[26];
-		//ctime_s(timecstring, sizeof(timecstring), &current);
-		//string timestring(timecstring);
-        //timestring = timestring.substr(0, timestring.size() - 1);
-        //os << timestring;
-		//ostringstream os;
-		chrono::milliseconds ms = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now().time_since_epoch());
-		while (inbuffer.size() >= 1)
-		{
-			if (ms.count() <= inbuffer.front().timestamp + latency)
-				break;
-			string bufferinfo = inbuffer.front().info;
-			inbuffer.pop();
-			pong.readInput(bufferinfo);
-		}
-		
-		pong.updateBallPositions();	
-		bufferMessage buffer;
-		buffer.info = pong.generateStateStr();
-		buffer.timestamp = ms.count();
-		outbuffer.push(buffer);
-    }
 }
 
 int main(int argc, char *argv[]){
@@ -504,6 +560,10 @@ int main(int argc, char *argv[]){
     server.setPeriodicHandler(periodicHandler);
 
     /* start the chatroom server, listen to ip '127.0.0.1' and port '8000' */
+	for (int i = 0; i < 4; i++)
+	{
+		playersPings[i].before, playersPings[i].after, playersPings[i].expected = 0;
+	}
     server.startServer(port);
 
     return 1;
