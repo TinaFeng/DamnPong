@@ -12,9 +12,9 @@ using namespace std;
 
 webSocket server;
 bool started = false;
-__int64 latency = 5, minLatency = 0, maxLatency = 2000, latencyAcceleration = 40;
+__int64 latency = 50, minLatency = 0, maxLatency = 2000, latencyAcceleration = 40;
 int numTicksToIgnore = 5, ticksSinceLastActivation = 0;
-int artificialLatencyType = 0;//0 is fixed, 1 is random, 2 is incremental
+int artificialLatencyType = 1;//0 is fixed, 1 is random, 2 is incremental
 
 
 struct bufferMessage {
